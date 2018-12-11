@@ -6,16 +6,15 @@
 #include <string>
 #include <vector>
 
-
 class Adjacency_Matrix {
     friend class File_Handler;
 
    public:
-    Adjacency_Matrix();
+    Adjacency_Matrix() = default;
     Adjacency_Matrix(std::vector<std::vector<int>> input);
     Adjacency_Matrix(const std::string& filename);
     Adjacency_Matrix(const size_t nodes);
-    virtual ~Adjacency_Matrix() = default;
+    ~Adjacency_Matrix() = default;
 
     bool operator==(const Adjacency_Matrix& rhs) const;
     bool operator!=(const Adjacency_Matrix& rhs) const;
@@ -25,24 +24,21 @@ class Adjacency_Matrix {
     std::string to_string() const;
     std::vector<std::vector<int>> data() const;
 
-    virtual std::vector<int> get_neighbours(int node) const;
-
-   protected:
-    std::vector<std::vector<int>> a_matrix_;
-
-    int find_longest_number() const;
-    void rows_to_string(std::string& output, int most_digits) const;
-    void cols_to_string(std::string& output, const std::vector<int>& row,
-                        int most_digits) const;
-    void pretty_string(std::string& str_matrix) const;
-    int get_digits(const int number) const;
+    std::vector<int> get_neighbours(int node) const;
 
    private:
+    std::vector<std::vector<int>> a_matrix_;
+
+    void rows_to_string(std::string& output) const;
+    void cols_to_string(std::string& output, const std::vector<int>& row) const;
+
     void fill_with_random();
-    std::vector<int> get_random_row();
+    std::vector<int> get_row_with_random();
+
     bool load_from_file(std::fstream& file);
     void load_data(std::fstream& file);
     size_t parse_size_input(std::string& size);
     void resize_matrix(size_t size);
+    void load_row(std::fstream& file, std::vector<int>& row);
     std::vector<int> line_to_vec(std::string& line);
 };
