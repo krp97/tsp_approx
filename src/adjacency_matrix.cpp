@@ -129,7 +129,7 @@ void Adjacency_Matrix::load_row(std::fstream& file, std::vector<int>& row)
         std::stringstream iss(line);
         int number;
         for (; iss >> number; ++element_counter)
-            row.push_back(number);
+            row[element_counter] = number;
     }
 }
 

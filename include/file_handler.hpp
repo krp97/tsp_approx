@@ -5,7 +5,6 @@
 #include <fstream>
 #include <string>
 
-
 class File_Handler {
    public:
     File_Handler() = delete;
@@ -13,7 +12,7 @@ class File_Handler {
     File_Handler(std::string filepath, Adjacency_Matrix& matrix);
 
     File_Handler& operator=(const File_Handler& rhs) = default;
-    ~File_Handler() = default;
+    ~File_Handler()                                  = default;
 
     bool run();
     std::string what() const;

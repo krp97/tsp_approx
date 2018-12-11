@@ -9,7 +9,6 @@ bool File_Handler::run()
 {
     std::fstream file;
     file.exceptions(std::fstream::failbit | std::fstream::badbit);
-
     try {
         file.open(filepath_);
         matrix_.load_from_file(file);
