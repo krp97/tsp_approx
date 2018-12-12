@@ -20,6 +20,11 @@ class Adjacency_Matrix {
     bool operator!=(const Adjacency_Matrix& rhs) const;
     std::vector<int>& operator[](const int index);
 
+    std::vector<std::vector<int>>::iterator begin();
+    std::vector<std::vector<int>>::iterator end();
+    std::vector<std::vector<int>>::reverse_iterator rbegin();
+    std::vector<std::vector<int>>::reverse_iterator rend();
+
     size_t size() const;
     std::string to_string() const;
     std::vector<std::vector<int>> data() const;

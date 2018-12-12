@@ -1,17 +1,12 @@
 #include <iostream>
 #include "../include/adjacency_matrix.hpp"
+#include "../include/greedy_search.hpp"
 
 int main()
 {
     auto matrix{Adjacency_Matrix(
-        "C:\\Users\\Desktop\\Desktop\\Github\\tsp_approx\\data\\ftv47.atsp")};
+        "C:\\Users\\Desktop\\Desktop\\Github\\tsp_approx\\data\\tsp_6_2.txt")};
 
-    std::fstream file;
-    file.exceptions(std::fstream::failbit | std::fstream::badbit);
-
-    file.open("C:\\Users\\Desktop\\Desktop\\Github\\tsp_approx\\data\\out.txt");
-
-    file << matrix.to_string();
-    file.close();
-    return 0;
+    auto gs = tsp_approx::greedy_search(matrix);
+    std::cout << gs.run().to_string();
 }

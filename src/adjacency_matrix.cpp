@@ -5,11 +5,6 @@
 #include <iostream>
 #include <sstream>
 
-Adjacency_Matrix::Adjacency_Matrix(std::vector<std::vector<int>> matrix)
-    : a_matrix_{matrix}
-{
-}
-
 Adjacency_Matrix::Adjacency_Matrix(const std::string& filename)
     : a_matrix_{std::vector<std::vector<int>>()}
 {
@@ -39,6 +34,26 @@ bool Adjacency_Matrix::operator!=(const Adjacency_Matrix& rhs) const
 std::vector<int>& Adjacency_Matrix::operator[](const int index)
 {
     return a_matrix_.at(index);
+}
+
+std::vector<std::vector<int>>::iterator Adjacency_Matrix::begin()
+{
+    return a_matrix_.begin();
+}
+
+std::vector<std::vector<int>>::iterator Adjacency_Matrix::end()
+{
+    return std::end(a_matrix_);
+}
+
+std::vector<std::vector<int>>::reverse_iterator Adjacency_Matrix::rbegin()
+{
+    return std::rend(a_matrix_);
+}
+
+std::vector<std::vector<int>>::reverse_iterator Adjacency_Matrix::rend()
+{
+    return std::rbegin(a_matrix_);
 }
 
 size_t Adjacency_Matrix::size() const { return a_matrix_.size(); }
