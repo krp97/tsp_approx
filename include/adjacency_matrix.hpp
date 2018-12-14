@@ -44,6 +44,5 @@ class Adjacency_Matrix {
     void load_data(std::fstream& file);
     size_t parse_size_input(std::string& size);
     void resize_matrix(size_t size);
-    void load_row(std::fstream& file, std::vector<int>& row);
     std::vector<int> line_to_vec(std::string& line);
 };

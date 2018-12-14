@@ -115,10 +115,12 @@ void Adjacency_Matrix::load_data(std::fstream& file)
 {
     std::string line;
     std::getline(file, line);
-    size_t size{parse_size_input(line)};
-    resize_matrix(size);
-    for (auto& rows : a_matrix_)
-        load_row(file, rows);
+    resize_matrix(parse_size_input(line));
+    for (auto& rows : a_matrix_) {
+        std::getline(file, line);
+        if (!file.eof())
+            rows = line_to_vec(line);
+    }
 }
 
 size_t Adjacency_Matrix::parse_size_input(std::string& size_input)
@@ -126,7 +128,9 @@ size_t Adjacency_Matrix::parse_size_input(std::string& size_input)
     size_t size;
     auto iss{std::istringstream(size_input)};
     iss >> size;
-    return iss.fail() ? 0 : size;
+    if (iss.fail())
+        size = 0;
+    return size;
 }
 
 void Adjacency_Matrix::resize_matrix(size_t size)
@@ -134,18 +138,15 @@ void Adjacency_Matrix::resize_matrix(size_t size)
     a_matrix_.resize(size, std::vector<int>(size));
 }
 
-// Reads as many lines as necessary to fill a row.
-void Adjacency_Matrix::load_row(std::fstream& file, std::vector<int>& row)
+std::vector<int> Adjacency_Matrix::line_to_vec(std::string& line)
 {
-    std::string line;
-    int element_counter{0};
-    while (element_counter < row.size()) {
-        std::getline(file, line);
-        std::stringstream iss(line);
-        int number;
-        for (; iss >> number; ++element_counter)
-            row[element_counter] = number;
-    }
+    auto output{std::vector<int>()};
+    std::stringstream iss(line);
+    int value;
+    while (iss >> value)
+        output.push_back(value);
+
+    return output;
 }
 
 std::vector<int> Adjacency_Matrix::get_neighbours(int node) const

@@ -14,7 +14,7 @@ void Path::subtract_cost(std::vector<int>::iterator it1,
 {
     if (it1 == it2)
         return;
-    auto subtraction = [](int a, int b) { a -= b; };
+    auto subtraction = [](int& a, int b) { return a -= b; };
     modify_edge_cost(it1, matrix, subtraction);
     modify_edge_cost(it2, matrix, subtraction);
 }
@@ -24,18 +24,25 @@ void Path::add_cost(std::vector<int>::iterator it1,
 {
     if (it1 == it2)
         return;
-    auto addition = [](int a, int b) { a += b; };
+    auto addition = [](int& a, int b) { return a += b; };
     modify_edge_cost(it1, matrix, addition);
     modify_edge_cost(it2, matrix, addition);
 }
 
+void Path::recalc_cost(Adjacency_Matrix & matrix)
+{
+	cost_ = 0;
+	for (int i{ 0 }; i < matrix.size() - 1; ++i)
+		cost_ += matrix[i][i + 1];
+}
+
 void Path::modify_edge_cost(std::vector<int>::iterator it,
                             Adjacency_Matrix& matrix,
-                            std::function<void(int a, int b)> fnc)
+                            std::function<void(int& a, int b)> fnc)
 {
     if (*std::begin(path_) != *it)
         fnc(cost_, matrix[*(it - 1)][*it]);
-    if (*std::rend(path_) != *it)
+    if (*std::prev(path_.end()) != *it)
         fnc(cost_, matrix[*it][*(it + 1)]);
 }
 

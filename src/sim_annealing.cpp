@@ -4,6 +4,7 @@
 
 #include <math.h>
 #include <random>
+#include <iostream>
 
 namespace tsp_approx {
 
@@ -20,7 +21,7 @@ Path sim_annealing::run()
 {
     auto gs{greedy_search(matrix_)};
     Path current_path = gs.run();
-    best_path         = current_path;
+	best_path = current_path;
     annealing(current_path);
     return best_path;
 }
@@ -31,13 +32,14 @@ void sim_annealing::annealing(Path& current_path)
     start_time         = utils::time_now();
     auto temp_path     = current_path;
 
-    while (temperature > 0 && !check_time_bound(utils::time_now())) {
+    while (!check_time_bound(utils::time_now())) {
         for (int i{0}; i < iterations; ++i) {
             Path new_path = neighbour(temp_path);
             update_path(new_path, temp_path, temperature);
         }
         temperature *= temp_factor_;
     }
+	std::cout << "temp:" << temperature << "\n\n\n";
 }
 
 bool sim_annealing::check_time_bound(double current_time)
@@ -49,15 +51,14 @@ Path sim_annealing::neighbour(Path& current_path)
 {
     Path cpy_path = current_path;
 
-    int index1{utils::random_int(0, matrix_.size() - 1)};
-    int index2{utils::random_int(0, matrix_.size() - 1)};
+    int index1{utils::random_int(1, matrix_.size() - 2)};
+    int index2{utils::random_int(1, matrix_.size() - 2)};
 
     auto it1{std::begin(cpy_path) + index1};
     auto it2{std::begin(cpy_path) + index2};
 
-    cpy_path.subtract_cost(it1, it2, matrix_);
-    std::swap(it1, it2);
-    cpy_path.add_cost(it1, it2, matrix_);
+	std::iter_swap(it1, it2);
+	cpy_path.recalc_cost(matrix_);
     return cpy_path;
 }
 
@@ -75,9 +76,9 @@ void sim_annealing::update_path(Path& new_path, Path& current_path,
 }
 
 double sim_annealing::calc_probability(Path& new_path, Path& current_path,
-                                       int temperature)
+                                       double temperature)
 {
     int cost_diff = -(current_path.cost_ - new_path.cost_);
-    return exp(cost_diff / temperature);
+    return temperature <= 0 ? 0 : exp(cost_diff / temperature);
 }
 }  // namespace tsp_approx
