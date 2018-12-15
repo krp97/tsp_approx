@@ -19,9 +19,9 @@ class sim_annealing {
         double time_limit_;
     };
 
-    sim_annealing()               = default;
-    sim_annealing(sim_annealing&) = default;
-    ~sim_annealing()              = default;
+    sim_annealing()                     = default;
+    sim_annealing(const sim_annealing&) = default;
+    ~sim_annealing()                    = default;
 
     sim_annealing(const annealing_data&, Adjacency_Matrix&);
 
@@ -32,7 +32,7 @@ class sim_annealing {
     bool check_time_bound(double);
 
     Path neighbour(Path&);
-    void update_path(Path& new_path, Path& current_path, int temperature);
+    void update_path(Path& new_path, Path& current_path, double temperature);
     double calc_probability(Path& new_path, Path& current_path,
                             double temperature);
 
@@ -43,6 +43,6 @@ class sim_annealing {
 
     Path best_path;
     double start_time;
-    const int iterations = 10;
+    const int iterations = 100;
 };
 }  // namespace tsp_approx

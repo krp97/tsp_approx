@@ -12,11 +12,18 @@ class Path {
 
     Path();
     Path(std::vector<int> path, const int cost, const std::string& algo_name);
-	const Path& operator=(Path& rhs) { path_ = rhs.path_; cost_ = rhs.cost_; return *this; };
+    const Path& operator=(const Path& rhs)
+    {
+        path_ = rhs.path_;
+        cost_ = rhs.cost_;
+        return *this;
+    };
     ~Path() = default;
 
     bool operator<(const Path& rhs) { return this->cost_ < rhs.cost_; };
     bool operator>(const Path& rhs) { return !(*this < rhs); };
+    bool operator==(const Path& rhs) { return path_ == rhs.path_; };
+    bool operator!=(const Path& rhs) { return !(*this == rhs); }
 
     std::vector<int>::iterator begin() { return path_.begin(); };
     std::vector<int>::iterator end() { return path_.end(); };
@@ -28,7 +35,7 @@ class Path {
     void add_cost(std::vector<int>::iterator it1,
                   std::vector<int>::iterator it2, Adjacency_Matrix& matrix);
 
-	void recalc_cost(Adjacency_Matrix& matrix);
+    void recalc_cost(Adjacency_Matrix& matrix);
 
     void add_to_path(const int node, const int cost);
     int get_prev_city();

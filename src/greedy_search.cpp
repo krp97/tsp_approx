@@ -1,5 +1,7 @@
 #include "../include/greedy_search.hpp"
 #include <iostream>
+#include <limits>
+
 namespace tsp_approx {
 greedy_search::greedy_search(Adjacency_Matrix& matrix) : matrix_{matrix} {}
 
@@ -11,32 +13,36 @@ Path greedy_search::run()
     visited[0] = true;
 
     int index{0};
-    for (size_t i{0}; i < matrix_.size() - 1; ++i) {
-        index = add_node(matrix_[index], visited, path);
+    for (auto it{matrix_.begin()}; !all_visited(visited);) {
+        index = get_minimum(*it, visited);
+        path.add_to_path(index, (*it)[index]);
+
+        visited[index] = true;
+        it             = matrix_.begin() + index;
     }
 
     path.add_to_path(0, matrix_[path.get_prev_city()][0]);
     return path;
 }
-int greedy_search::add_node(std::vector<int>& row, std::vector<bool>& visited,
-                            Path& path)
+
+int greedy_search::get_minimum(std::vector<int>& row,
+                               std::vector<bool>& visited)
 {
-    std::vector<int> vec_copy = row;
-    bool exit                 = false;
-    int index                 = 0;
+    int min = std::numeric_limits<int>::max(), index = 0, min_index = 0;
 
-    while (!exit) {
-        auto min_element = std::min_element(vec_copy.begin(), vec_copy.end());
-        index = std::find(row.begin(), row.end(), *min_element) - row.begin();
-
-        if (!visited[index]) {
-            path.add_to_path(index, matrix_[path.get_prev_city()][index]);
-            exit           = true;
-            visited[index] = true;
+    for (auto it{row.begin()}; it != std::end(row); ++it) {
+        index = it - row.begin();
+        if (*it < min && !visited[index]) {
+            min       = *it;
+            min_index = index;
         }
-        else
-            vec_copy.erase(min_element);
     }
-    return index;
+    return min_index;
+}
+
+bool greedy_search::all_visited(std::vector<bool>& visited)
+{
+    return std::find(visited.begin(), visited.end(), false) ==
+           std::end(visited);
 }
 }  // namespace tsp_approx

@@ -29,11 +29,11 @@ void Path::add_cost(std::vector<int>::iterator it1,
     modify_edge_cost(it2, matrix, addition);
 }
 
-void Path::recalc_cost(Adjacency_Matrix & matrix)
+void Path::recalc_cost(Adjacency_Matrix& matrix)
 {
-	cost_ = 0;
-	for (int i{ 0 }; i < matrix.size() - 1; ++i)
-		cost_ += matrix[i][i + 1];
+    cost_ = 0;
+    for (int i{0}; i < path_.size() - 1; ++i)
+        cost_ += matrix[path_[i]][path_[i + 1]];
 }
 
 void Path::modify_edge_cost(std::vector<int>::iterator it,

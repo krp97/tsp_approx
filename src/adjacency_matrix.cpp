@@ -118,8 +118,7 @@ void Adjacency_Matrix::load_data(std::fstream& file)
     resize_matrix(parse_size_input(line));
     for (auto& rows : a_matrix_) {
         std::getline(file, line);
-        if (!file.eof())
-            rows = line_to_vec(line);
+        rows = line_to_vec(line);
     }
 }
 
