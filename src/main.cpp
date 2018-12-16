@@ -9,14 +9,8 @@
 int main()
 {
     srand(time(NULL));
-    std::vector<int> vec = std::vector<int>(49, 0);
-    std::iota(vec.begin() + 1, vec.end() - 1, 1);
-    Path p = Path(vec, 0, "");
-
-    auto matrix = Adjacency_Matrix(
-        "/home/laptop/Desktop/git/tsp_approx/data/tsp_171.txt");
-    p.recalc_cost(matrix);
-    std::cout << p.to_string();
+    auto matrix =
+        Adjacency_Matrix("/home/laptop/Desktop/git/tsp_approx/data/tsp_48.txt");
     auto data =
         tsp_approx::sim_annealing::annealing_data(11000, 0.99999, 30000);
     auto sa = tsp_approx::sim_annealing(data, matrix,
