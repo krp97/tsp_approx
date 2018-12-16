@@ -8,25 +8,11 @@ Path::Path(std::vector<int> path, const int cost, const std::string& algo_name)
 {
 }
 
-void Path::subtract_cost(std::vector<int>::iterator it1,
-                         std::vector<int>::iterator it2,
-                         Adjacency_Matrix& matrix)
+const Path& Path::operator=(const Path& rhs)
 {
-    if (it1 == it2)
-        return;
-    auto subtraction = [](int& a, int b) { return a -= b; };
-    modify_edge_cost(it1, matrix, subtraction);
-    modify_edge_cost(it2, matrix, subtraction);
-}
-
-void Path::add_cost(std::vector<int>::iterator it1,
-                    std::vector<int>::iterator it2, Adjacency_Matrix& matrix)
-{
-    if (it1 == it2)
-        return;
-    auto addition = [](int& a, int b) { return a += b; };
-    modify_edge_cost(it1, matrix, addition);
-    modify_edge_cost(it2, matrix, addition);
+    path_ = rhs.path_;
+    cost_ = rhs.cost_;
+    return *this;
 }
 
 void Path::recalc_cost(Adjacency_Matrix& matrix)
@@ -34,16 +20,6 @@ void Path::recalc_cost(Adjacency_Matrix& matrix)
     cost_ = 0;
     for (int i{0}; i < path_.size() - 1; ++i)
         cost_ += matrix[path_[i]][path_[i + 1]];
-}
-
-void Path::modify_edge_cost(std::vector<int>::iterator it,
-                            Adjacency_Matrix& matrix,
-                            std::function<void(int& a, int b)> fnc)
-{
-    if (*std::begin(path_) != *it)
-        fnc(cost_, matrix[*(it - 1)][*it]);
-    if (*std::prev(path_.end()) != *it)
-        fnc(cost_, matrix[*it][*(it + 1)]);
 }
 
 void Path::add_to_path(const int node, const int cost)

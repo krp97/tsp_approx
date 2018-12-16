@@ -12,6 +12,13 @@ Path greedy_search::run()
     path.add_to_path(0, 0);
     visited[0] = true;
 
+    run(path, visited);
+    path.add_to_path(0, matrix_[path.get_prev_city()][0]);
+    return path;
+}
+
+void greedy_search::run(Path& path, std::vector<bool>& visited)
+{
     int index{0};
     for (auto it{matrix_.begin()}; !all_visited(visited);) {
         index = get_minimum(*it, visited);
@@ -20,9 +27,6 @@ Path greedy_search::run()
         visited[index] = true;
         it             = matrix_.begin() + index;
     }
-
-    path.add_to_path(0, matrix_[path.get_prev_city()][0]);
-    return path;
 }
 
 int greedy_search::get_minimum(std::vector<int>& row,

@@ -1,4 +1,6 @@
 #pragma once
+#include <functional>
+
 #include "adjacency_matrix.hpp"
 #include "path.hpp"
 
@@ -23,26 +25,29 @@ class sim_annealing {
     sim_annealing(const sim_annealing&) = default;
     ~sim_annealing()                    = default;
 
-    sim_annealing(const annealing_data&, Adjacency_Matrix&);
+    sim_annealing(const annealing_data&, Adjacency_Matrix&,
+                  std::function<Path(Path&, Adjacency_Matrix&)> neighbour_fnc);
 
     Path run();
+
+    // Neighbour functions
+    static Path swap(Path& current_path, Adjacency_Matrix&);
+    static Path swap_n_reverse(Path& current_path, Adjacency_Matrix&);
+    static Path insertion(Path& current_path, Adjacency_Matrix&);
 
    private:
     void annealing(Path&);
     bool check_time_bound(double);
 
-    Path neighbour(Path&);
     void update_path(Path& new_path, Path& current_path, double temperature);
     double calc_probability(Path& new_path, Path& current_path,
                             double temperature);
 
-    const int temperature_limit_;
-    const double temp_factor_;
-    double time_limit_;
+    const annealing_data& sa_data;
     Adjacency_Matrix& matrix_;
+    std::function<Path(Path&, Adjacency_Matrix&)> neighbour_fnc_;
 
     Path best_path;
     double start_time;
-    const int iterations = 100;
 };
 }  // namespace tsp_approx

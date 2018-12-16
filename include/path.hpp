@@ -12,13 +12,8 @@ class Path {
 
     Path();
     Path(std::vector<int> path, const int cost, const std::string& algo_name);
-    const Path& operator=(const Path& rhs)
-    {
-        path_ = rhs.path_;
-        cost_ = rhs.cost_;
-        return *this;
-    };
-    ~Path() = default;
+    const Path& operator=(const Path& rhs);
+    ~Path()             = default;
 
     bool operator<(const Path& rhs) { return this->cost_ < rhs.cost_; };
     bool operator>(const Path& rhs) { return !(*this < rhs); };
@@ -27,13 +22,6 @@ class Path {
 
     std::vector<int>::iterator begin() { return path_.begin(); };
     std::vector<int>::iterator end() { return path_.end(); };
-
-    void subtract_cost(std::vector<int>::iterator it1,
-                       std::vector<int>::iterator it2,
-                       Adjacency_Matrix& matrix);
-
-    void add_cost(std::vector<int>::iterator it1,
-                  std::vector<int>::iterator it2, Adjacency_Matrix& matrix);
 
     void recalc_cost(Adjacency_Matrix& matrix);
 
@@ -47,8 +35,4 @@ class Path {
                              const unsigned line_len) const;
     std::string get_path_str();
     std::string get_cost_str();
-
-    void modify_edge_cost(std::vector<int>::iterator it,
-                          Adjacency_Matrix& matrix,
-                          std::function<void(int& a, int b)> fnc);
 };
