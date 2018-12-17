@@ -18,7 +18,6 @@ class greedy_search {
    private:
     Adjacency_Matrix& matrix_;
     void run(Path&, std::vector<bool>& visited);
-    int add_node(std::vector<int>& row, std::vector<bool>& visited, Path& path);
     int get_minimum(std::vector<int>& row, std::vector<bool>& visited);
     bool all_visited(std::vector<bool>& visited);
 };

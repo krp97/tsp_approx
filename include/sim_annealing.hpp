@@ -3,17 +3,21 @@
 
 #include "adjacency_matrix.hpp"
 #include "path.hpp"
+#include "timer.hpp"
 
 namespace tsp_approx {
 
 class sim_annealing {
    public:
     struct annealing_data {
+        annealing_data() = default;
         annealing_data(const int temperature, const double temp_factor,
                        double time_limit)
             : temperature_{temperature},
               temp_factor_{temp_factor},
               time_limit_{time_limit} {};
+        annealing_data(const annealing_data&) = default;
+        annealing_data& operator=(const annealing_data&) = default;
 
        public:
         const int temperature_;
@@ -25,27 +29,33 @@ class sim_annealing {
     sim_annealing(const sim_annealing&) = default;
     ~sim_annealing()                    = default;
 
-    sim_annealing(const annealing_data&, Adjacency_Matrix&,
-                  std::function<Path(Path&, Adjacency_Matrix&)> neighbour_fnc);
+    sim_annealing(
+        const annealing_data&, Adjacency_Matrix&,
+        std::function<double(double temperature, double temp_factor, int cycle)>
+            cooldown_fnc);
 
-    Path run();
+    Path run(Timer<Path>* timer);
 
-    // Neighbour functions
-    static Path swap(Path& current_path, Adjacency_Matrix&);
-    static Path swap_n_reverse(Path& current_path, Adjacency_Matrix&);
-    static Path insertion(Path& current_path, Adjacency_Matrix&);
+    // Cooling functions
+    static double linear_cooling(double temperature, double temp_factor,
+                                 int cycle);
+    static double logarithmical_cooling(double temperature, double temp_factor,
+                                        int cycle);
+    static double exponential_cooling(double temperature, double temp_factor,
+                                      int cycle);
 
    private:
-    void annealing(Path&);
-    bool check_time_bound(double);
-
+    void annealing(Path&, Timer<Path>* timer);
+    bool check_time_bound(Timer<Path>* timer);
+    Path swap(Path& current_path, Adjacency_Matrix& matrix);
     void update_path(Path& new_path, Path& current_path, double temperature);
     double calc_probability(Path& new_path, Path& current_path,
                             double temperature);
 
     const annealing_data& sa_data;
     Adjacency_Matrix& matrix_;
-    std::function<Path(Path&, Adjacency_Matrix&)> neighbour_fnc_;
+    std::function<double(double temperature, double temp_factor, int cycle)>
+        cooldown_fnc_;
 
     Path best_path;
     double start_time;
