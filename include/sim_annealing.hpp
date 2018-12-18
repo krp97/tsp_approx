@@ -11,17 +11,14 @@ class sim_annealing {
    public:
     struct annealing_data {
         annealing_data() = default;
-        annealing_data(const int temperature, const double temp_factor,
-                       double time_limit)
-            : temperature_{temperature},
-              temp_factor_{temp_factor},
-              time_limit_{time_limit} {};
+        annealing_data(const double temp_factor, double time_limit)
+            : temp_factor_{temp_factor}, time_limit_{time_limit} {};
+
         annealing_data(const annealing_data&) = default;
         annealing_data& operator=(const annealing_data&) = default;
 
        public:
-        const int temperature_;
-        const double temp_factor_;
+        double temp_factor_;
         double time_limit_;
     };
 
@@ -45,6 +42,10 @@ class sim_annealing {
                                       int cycle);
 
    private:
+    void calc_start_temperature();
+    int find_min_edge();
+    int find_max_edge();
+
     void annealing(Path&, Timer<Path>* timer);
     bool check_time_bound(Timer<Path>* timer);
     Path swap(Path& current_path, Adjacency_Matrix& matrix);
@@ -53,6 +54,7 @@ class sim_annealing {
                             double temperature);
 
     const annealing_data& sa_data;
+    double start_temperature;
     Adjacency_Matrix& matrix_;
     std::function<double(double temperature, double temp_factor, int cycle)>
         cooldown_fnc_;

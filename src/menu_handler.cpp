@@ -21,7 +21,7 @@ void Menu::draw_menu(const std::string subtitles[], size_t size,
     draw_body(subtitles, size, line_len);
 
     std::cout << std::string(line_len + format_chars, '-') << std::endl;
-    std::cout << "\n Your choice >> ";
+    std::cout << "\n Twoj wybor >> ";
 }
 
 void Menu::draw_extras() const {}
@@ -89,14 +89,10 @@ void Menu::handle_input(const std::string subtitles[], size_t size,
                 break;
             }
             case 3: {
-                secure_read_double(tsp_api.temp_start_);
-                break;
-            }
-            case 4: {
                 load_from_file(get_filename());
                 break;
             }
-            case 5: {
+            case 4: {
                 algorithm_menu();
                 break;
             }
@@ -108,9 +104,60 @@ void Menu::handle_input(const std::string subtitles[], size_t size,
     }
 }
 
-void Menu::algorithm_menu() {}
+void Menu::algorithm_menu()
+{
+    int choice              = 4;
+    bool exit               = false;
+    std::string subtitles[] = {"Liniowe", "Logarytmiczne", "Wykladnicze",
+                               "Powrot"};
+    while (!exit) {
+        draw_menu(subtitles, 4, "Typ chlodzenia");
+        std::cin >> choice;
+        switch (choice) {
+            case 1: {
+                clear_term();
+                std::cout << tsp_api.simulated_annealing().to_string();
+                wait_for_reaction();
+                break;
+            }
+            case 2: {
+                clear_term();
+                std::cout
+                    << tsp_api
+                           .simulated_annealing(
+                               tsp_approx::sim_annealing::logarithmical_cooling)
+                           .to_string();
+                wait_for_reaction();
+                break;
+            }
+            case 3: {
+                clear_term();
+                std::cout
+                    << tsp_api
+                           .simulated_annealing(
+                               tsp_approx::sim_annealing::exponential_cooling)
+                           .to_string();
+                wait_for_reaction();
+                break;
+            }
+            default: {
+                exit = true;
+                break;
+            }
+        }
+    }
+}
 
-void Menu::load_from_file(const std::string& filename) {}
+void Menu::load_from_file(const std::string& filename)
+{
+    try {
+        tsp_api.load_from_file(filename);
+    }
+    catch (const std::invalid_argument& e) {
+        std::cout << "\n Error >> " << e.what();
+    }
+    wait_for_reaction();
+}
 
 void Menu::wait_for_reaction()
 {
@@ -133,8 +180,6 @@ double Menu::get_double()
     std::cout << " Wprowadz liczbe >> ";
     std::cin >> input;
     amount = strtod(input.c_str(), nullptr);
-    if (errno)
-        throw std::invalid_argument("Error : Nieprawdilowa liczba.");
     return amount;
 }
 

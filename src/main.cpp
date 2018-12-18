@@ -11,10 +11,9 @@
 int main()
 {
     Menu m{Menu()};
-    std::string subtitles[] = {"Ustaw czas wykonywania.",
-                               "Ustaw wspolczynnik chlodzenia.",
-                               "Ustaw temperature poczatkowa",
-                               "Wczytaj z pliku.", "Uruchom algorytmy."};
+    std::string subtitles[] = {
+        "Ustaw czas wykonywania.", "Ustaw wspolczynnik chlodzenia.",
+        "Wczytaj z pliku.", "Uruchom symulowane wyzarzanie.", "Wyjscie"};
     m.run(subtitles, 5, "Menu");
     return 0;
 }
