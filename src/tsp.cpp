@@ -20,6 +20,16 @@ Path tsp::simulated_annealing(
     return timer.get_output();
 }
 
+Path tsp::tabu_search()
+{
+    auto ts = tsp_approx::tabu_search(time_limit_, matrix_);
+
+    Timer<Path> timer = Timer<Path>(
+        [&ts](Timer<Path>* timer) -> Path { return ts.run(timer); });
+    timer.run();
+    return timer.get_output();
+}
+
 void tsp::load_from_file(std::string filepath)
 {
     try {

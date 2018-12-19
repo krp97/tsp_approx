@@ -45,8 +45,8 @@ bool sim_annealing::check_time_bound(Timer<Path>* timer)
 Path sim_annealing::swap(Path& current_path, Adjacency_Matrix& matrix)
 {
     Path cpy_path = current_path;
-    int index1    = utils::random_int(1, current_path.path_.size() - 2);
-    int index2    = utils::random_int(1, current_path.path_.size() - 2);
+    int index1    = utils::random_int(1, current_path.size() - 2);
+    int index2    = utils::random_int(1, current_path.size() - 2);
 
     auto it1{std::begin(cpy_path) + index1};
     auto it2{std::begin(cpy_path) + index2};

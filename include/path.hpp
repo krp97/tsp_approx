@@ -14,7 +14,7 @@ class Path {
     Path(std::vector<int> path, const int cost, const std::string& algo_name);
     const Path& operator=(const Path& rhs);
     ~Path()             = default;
-
+    int& operator[](int index) { return path_[index]; };
     bool operator<(const Path& rhs) { return this->cost_ < rhs.cost_; };
     bool operator>(const Path& rhs) { return !(*this < rhs); };
     bool operator==(const Path& rhs) { return path_ == rhs.path_; };
@@ -22,6 +22,8 @@ class Path {
 
     std::vector<int>::iterator begin() { return path_.begin(); };
     std::vector<int>::iterator end() { return path_.end(); };
+
+    int size() { return path_.size(); };
 
     void recalc_cost(Adjacency_Matrix& matrix);
 

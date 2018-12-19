@@ -93,7 +93,12 @@ void Menu::handle_input(const std::string subtitles[], size_t size,
                 break;
             }
             case 4: {
-                algorithm_menu();
+                if (tsp_api.is_loaded)
+                    algorithm_menu();
+                else {
+                    std::cout << "\n Error: Brak danych o grafie.";
+                    wait_for_reaction();
+                }
                 break;
             }
             default: {
@@ -108,10 +113,13 @@ void Menu::algorithm_menu()
 {
     int choice              = 4;
     bool exit               = false;
-    std::string subtitles[] = {"Liniowe", "Logarytmiczne", "Wykladnicze",
+    std::string subtitles[] = {"SA - Chlodzenie Liniowe",
+                               "SA - Chlodzenie Logarytmiczne",
+                               "SA - Chlodzenie Wykladnicze",
+                               "Tabu Search"
                                "Powrot"};
     while (!exit) {
-        draw_menu(subtitles, 4, "Typ chlodzenia");
+        draw_menu(subtitles, 5, "Algorytmy");
         std::cin >> choice;
         switch (choice) {
             case 1: {
@@ -140,6 +148,12 @@ void Menu::algorithm_menu()
                 wait_for_reaction();
                 break;
             }
+            case 4: {
+                clear_term();
+                std::cout << tsp_api.tabu_search().to_string();
+                wait_for_reaction();
+                break;
+            }
             default: {
                 exit = true;
                 break;
@@ -155,8 +169,8 @@ void Menu::load_from_file(const std::string& filename)
     }
     catch (const std::invalid_argument& e) {
         std::cout << "\n Error >> " << e.what();
+        wait_for_reaction();
     }
-    wait_for_reaction();
 }
 
 void Menu::wait_for_reaction()
