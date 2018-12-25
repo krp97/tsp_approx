@@ -13,29 +13,44 @@ Path tabu_search::run(Timer<Path>* timer)
 {
     auto gs{greedy_search(matrix_)};
     Path current_path = gs.run();
-    best_path         = current_path;
+    best_path = Path(std::vector<int>(), std::numeric_limits<int>::max(), "");
     return ts(current_path, timer);
 }
 
 Path tabu_search::ts(Path current_path, Timer<Path>* timer)
 {
-    for (int div_count = 0; check_time_bound(timer);) {
+    bool score1 = false;
+    bool score2 = false;
+    bool score3 = false;
+
+    for (double div_start{utils::time_now()}; check_time_bound(timer);) {
         current_path = best_neighbour(current_path);
 
         if (current_path < best_path) {
             best_path = current_path;
-            div_count = 0;
+            div_start = utils::time_now();
         }
-        else
-            div_count++;
 
-        if (div_count == 10000) {
+        if (utils::time_now() - div_start >
+            static_cast<double>(0.1 * 1000 * matrix_.size())) {
             current_path = diversify(current_path);
-            div_count    = 0;
+            div_start    = utils::time_now();
         }
 
-        if (tabu_list.size() > 10)
+        if (tabu_list.size() > matrix_.size())
             tabu_list.pop_front();
+        if (timer->get_elapsed() > 30000 && !score1) {
+            score1 = true;
+            std::cout << best_path.to_string() << std::endl;
+        }
+        if (timer->get_elapsed() > 60000 && !score2) {
+            score2 = true;
+            std::cout << best_path.to_string() << std::endl;
+        }
+        if (timer->get_elapsed() > 90000 && !score3) {
+            score3 = true;
+            std::cout << best_path.to_string() << std::endl;
+        }
     }
     return current_path;
 }

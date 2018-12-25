@@ -113,13 +113,10 @@ void Menu::algorithm_menu()
 {
     int choice              = 4;
     bool exit               = false;
-    std::string subtitles[] = {"SA - Chlodzenie Liniowe",
-                               "SA - Chlodzenie Logarytmiczne",
-                               "SA - Chlodzenie Wykladnicze",
-                               "Tabu Search"
-                               "Powrot"};
+    std::string subtitles[] = {"Chlodzenie Liniowe", "Chlodzenie Logarytmiczne",
+                               "Chlodzenie Wykladnicze", "Powrot"};
     while (!exit) {
-        draw_menu(subtitles, 5, "Algorytmy");
+        draw_menu(subtitles, 4, "SA");
         std::cin >> choice;
         switch (choice) {
             case 1: {
@@ -145,12 +142,6 @@ void Menu::algorithm_menu()
                            .simulated_annealing(
                                tsp_approx::sim_annealing::exponential_cooling)
                            .to_string();
-                wait_for_reaction();
-                break;
-            }
-            case 4: {
-                clear_term();
-                std::cout << tsp_api.tabu_search().to_string();
                 wait_for_reaction();
                 break;
             }

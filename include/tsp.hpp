@@ -5,7 +5,6 @@
 #include "adjacency_matrix.hpp"
 #include "path.hpp"
 #include "sim_annealing.hpp"
-#include "tabu_search.hpp"
 
 class tsp {
    public:
@@ -24,7 +23,6 @@ class tsp {
                              int cycle)> =
             tsp_approx::sim_annealing::linear_cooling);
 
-    Path tabu_search();
     bool is_loaded = false;
 
    private:

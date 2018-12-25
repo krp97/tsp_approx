@@ -14,6 +14,7 @@ sim_annealing::sim_annealing(
     : sa_data{data}, matrix_{matrix}, cooldown_fnc_{cooldown_fnc}
 {
     calc_start_temperature();
+    std::cout << "\nStart: " << start_temperature << std::endl;
 }
 
 Path sim_annealing::run(Timer<Path>* timer)
@@ -22,19 +23,40 @@ Path sim_annealing::run(Timer<Path>* timer)
     Path current_path = gs.run();
     best_path         = current_path;
     annealing(current_path, timer);
-    return best_path;
+    return current_path;
 }
 
 void sim_annealing::annealing(Path& current_path, Timer<Path>* timer)
 {
     double temperature = start_temperature;
-    start_time         = utils::time_now();
+
+    bool score1 = false;
+    bool score2 = false;
+    bool score3 = false;
+    bool score4 = false;
+    bool score5 = false;
+    bool score6 = false;
 
     for (int cycle{0}; check_time_bound(timer); ++cycle) {
-        Path new_path = swap(current_path, matrix_);
-        update_path(new_path, current_path, temperature);
+        for (int i{0}; i < 5; ++i) {
+            Path new_path = swap(current_path, matrix_);
+            update_path(new_path, current_path, temperature);
+        }
         temperature = cooldown_fnc_(temperature, sa_data.temp_factor_, cycle);
+        if (timer->get_elapsed() > 30000 && !score1) {
+            score1 = true;
+            std::cout << current_path.to_string() << std::endl;
+        }
+        if (timer->get_elapsed() > 60000 && !score2) {
+            score2 = true;
+            std::cout << current_path.to_string() << std::endl;
+        }
+        if (timer->get_elapsed() > 90000 && !score3) {
+            score3 = true;
+            std::cout << current_path.to_string() << std::endl;
+        }
     }
+    std::cout << "\nStart: " << temperature << std::endl;
 }
 
 bool sim_annealing::check_time_bound(Timer<Path>* timer)
