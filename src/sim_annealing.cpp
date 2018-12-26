@@ -8,72 +8,49 @@
 
 namespace tsp_approx {
 sim_annealing::sim_annealing(
-    const annealing_data& data, Adjacency_Matrix& matrix,
+    const double temp_factor, Adjacency_Matrix& matrix,
     std::function<double(double temperature, double temp_factor, int cycle)>
         cooldown_fnc)
-    : sa_data{data}, matrix_{matrix}, cooldown_fnc_{cooldown_fnc}
+    : temp_factor_{temp_factor}, matrix_{matrix}, cooldown_fnc_{cooldown_fnc}
 {
-    calc_start_temperature();
-    std::cout << "\nStart: " << start_temperature << std::endl;
+    start_temperature_ = [&] {
+        return abs(static_cast<double>(find_min_edge()) * matrix_.size() -
+                   static_cast<double>(find_max_edge()) * matrix_.size());
+    }();
 }
 
 Path sim_annealing::run(Timer<Path>* timer)
 {
     auto gs{greedy_search(matrix_)};
     Path current_path = gs.run();
-    best_path         = current_path;
+    best_path_        = current_path;
     annealing(current_path, timer);
     return current_path;
 }
 
 void sim_annealing::annealing(Path& current_path, Timer<Path>* timer)
 {
-    double temperature = start_temperature;
+    double temperature{start_temperature_};
 
-    bool score1 = false;
-    bool score2 = false;
-    bool score3 = false;
-    bool score4 = false;
-    bool score5 = false;
-    bool score6 = false;
-
-    for (int cycle{0}; check_time_bound(timer); ++cycle) {
+    for (int cycle{0}; timer->is_finished(); ++cycle) {
         for (int i{0}; i < 5; ++i) {
             Path new_path = swap(current_path, matrix_);
             update_path(new_path, current_path, temperature);
         }
-        temperature = cooldown_fnc_(temperature, sa_data.temp_factor_, cycle);
-        if (timer->get_elapsed() > 30000 && !score1) {
-            score1 = true;
-            std::cout << current_path.to_string() << std::endl;
-        }
-        if (timer->get_elapsed() > 60000 && !score2) {
-            score2 = true;
-            std::cout << current_path.to_string() << std::endl;
-        }
-        if (timer->get_elapsed() > 90000 && !score3) {
-            score3 = true;
-            std::cout << current_path.to_string() << std::endl;
-        }
+        temperature = cooldown_fnc_(temperature, temp_factor_, cycle);
     }
-    std::cout << "\nStart: " << temperature << std::endl;
-}
-
-bool sim_annealing::check_time_bound(Timer<Path>* timer)
-{
-    return timer->get_elapsed() < sa_data.time_limit_;
 }
 
 Path sim_annealing::swap(Path& current_path, Adjacency_Matrix& matrix)
 {
     Path cpy_path = current_path;
-    int index1    = utils::random_int(1, current_path.size() - 2);
-    int index2    = utils::random_int(1, current_path.size() - 2);
 
+    int index1 = utils::random_int(1, cpy_path.size() - 2);
+    int index2 = utils::random_int(1, cpy_path.size() - 2);
     auto it1{std::begin(cpy_path) + index1};
     auto it2{std::begin(cpy_path) + index2};
-
     std::iter_swap(it1, it2);
+
     cpy_path.recalc_cost(matrix);
     return cpy_path;
 }
@@ -83,7 +60,7 @@ void sim_annealing::update_path(Path& new_path, Path& current_path,
 {
     if (new_path < current_path) {
         current_path = new_path;
-        best_path    = current_path < best_path ? current_path : best_path;
+        best_path_   = current_path < best_path_ ? current_path : best_path_;
     }
     else if (utils::random_double(0.0, 1.0) <
              calc_probability(new_path, current_path, temperature)) {
@@ -117,19 +94,11 @@ double sim_annealing::exponential_cooling(double temperature,
     return temperature * pow(temp_factor, cycle);
 }
 
-void sim_annealing::calc_start_temperature()
-{
-    start_temperature =
-        abs(static_cast<double>(find_min_edge()) * matrix_.size() -
-            static_cast<double>(find_max_edge()) * matrix_.size());
-}
-
 int sim_annealing::find_min_edge()
 {
     int min = std::numeric_limits<int>::max();
     for (auto& row : matrix_)
-        for (auto& col : row)
-            min = std::min(min, col);
+        for (auto& col : row) min = std::min(min, col);
     return min;
 }
 
@@ -137,8 +106,7 @@ int sim_annealing::find_max_edge()
 {
     int max = std::numeric_limits<int>::min();
     for (auto& row : matrix_)
-        for (auto& col : row)
-            max = std::max(max, col);
+        for (auto& col : row) max = std::max(max, col);
     return max;
 }
 

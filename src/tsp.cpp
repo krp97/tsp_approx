@@ -9,12 +9,11 @@ Path tsp::simulated_annealing(
     std::function<double(double temperature, double temp_factor, int cycle)>
         cooling_fnc)
 {
-    auto data =
-        tsp_approx::sim_annealing::annealing_data(temp_factor_, time_limit_);
-    auto sa = tsp_approx::sim_annealing(data, matrix_, cooling_fnc);
+    auto sa{tsp_approx::sim_annealing(temp_factor_, matrix_, cooling_fnc)};
 
-    Timer<Path> timer = Timer<Path>(
-        [&sa](Timer<Path>* timer) -> Path { return sa.run(timer); });
+    Timer<Path> timer =
+        Timer<Path>([&sa](Timer<Path>* timer) -> Path { return sa.run(timer); },
+                    time_limit_);
     timer.run();
 
     return timer.get_output();

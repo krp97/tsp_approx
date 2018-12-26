@@ -39,8 +39,7 @@ int Menu::longest_subtitle(const std::string subtitles[], size_t size) const
 {
     unsigned max_len{0};
     for (size_t i{0}; i < size; ++i) {
-        if (max_len < subtitles[i].size())
-            max_len = subtitles[i].size();
+        if (max_len < subtitles[i].size()) max_len = subtitles[i].size();
     }
     return max_len;
 }

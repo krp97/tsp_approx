@@ -19,11 +19,7 @@ Path tabu_search::run(Timer<Path>* timer)
 
 Path tabu_search::ts(Path current_path, Timer<Path>* timer)
 {
-    bool score1 = false;
-    bool score2 = false;
-    bool score3 = false;
-
-    for (double div_start{utils::time_now()}; check_time_bound(timer);) {
+    for (double div_start{utils::time_now()}; timer->is_finished();) {
         current_path = best_neighbour(current_path);
 
         if (current_path < best_path) {
@@ -35,21 +31,6 @@ Path tabu_search::ts(Path current_path, Timer<Path>* timer)
             static_cast<double>(0.1 * 1000 * matrix_.size())) {
             current_path = diversify(current_path);
             div_start    = utils::time_now();
-        }
-
-        if (tabu_list.size() > matrix_.size())
-            tabu_list.pop_front();
-        if (timer->get_elapsed() > 30000 && !score1) {
-            score1 = true;
-            std::cout << best_path.to_string() << std::endl;
-        }
-        if (timer->get_elapsed() > 60000 && !score2) {
-            score2 = true;
-            std::cout << best_path.to_string() << std::endl;
-        }
-        if (timer->get_elapsed() > 90000 && !score3) {
-            score3 = true;
-            std::cout << best_path.to_string() << std::endl;
         }
     }
     return current_path;
@@ -125,12 +106,6 @@ std::vector<int> tabu_search::get_each_n(int n, Path& path)
 
 void tabu_search::add_nodes(std::vector<int>& nodes, Path& path_to_add)
 {
-    for (auto& node : nodes)
-        path_to_add.add_to_path(node, 0);
-}
-
-bool tabu_search::check_time_bound(Timer<Path>* timer)
-{
-    return timer->get_elapsed() < time_limit_;
+    for (auto& node : nodes) path_to_add.add_to_path(node, 0);
 }
 }  // namespace tsp_approx

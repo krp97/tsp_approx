@@ -11,10 +11,16 @@ class tsp {
     double time_limit_;
     double temp_factor_;
 
-    tsp() = default;
-    tsp(double time_limit, double temp_start, double temp_factor);
+    tsp()  = default;
+    ~tsp() = default;
+
     tsp(const tsp&) = default;
-    ~tsp()          = default;
+    tsp(tsp&&)      = default;
+
+    tsp& operator=(const tsp&) = default;
+    tsp& operator=(tsp&&) = default;
+
+    tsp(double time_limit, double temp_start, double temp_factor);
 
     void load_from_file(std::string);
 

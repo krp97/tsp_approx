@@ -11,11 +11,16 @@
 namespace tsp_approx {
 class tabu_search {
    public:
-    tabu_search() = delete;
-    tabu_search(double time_limit, Adjacency_Matrix& matrix);
+    tabu_search()  = delete;
+    ~tabu_search() = default;
 
     tabu_search(const tabu_search&) = default;
-    ~tabu_search()                  = default;
+    tabu_search(tabu_search&&)      = default;
+
+    tabu_search& operator=(const tabu_search&) = default;
+    tabu_search& operator=(tabu_search&&) = default;
+
+    tabu_search(double time_limit, Adjacency_Matrix& matrix);
 
     Path run(Timer<Path>* timer);
 
