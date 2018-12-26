@@ -4,8 +4,13 @@
 
 namespace tsp_approx {
 
-tabu_search::tabu_search(double time_limit, Adjacency_Matrix& matrix)
-    : time_limit_{time_limit}, matrix_{matrix}
+tabu_search::tabu_search(
+    Adjacency_Matrix& matrix,
+    std::function<Path(std::pair<size_t, size_t>, Path&, Adjacency_Matrix&)>
+        neighbour_fnc)
+    : matrix_{matrix},
+      tabu_list_(matrix_.size(), std::vector<unsigned>(matrix_.size(), 0)),
+      neighbour_fnc_{neighbour_fnc}
 {
 }
 
@@ -13,99 +18,104 @@ Path tabu_search::run(Timer<Path>* timer)
 {
     auto gs{greedy_search(matrix_)};
     Path current_path = gs.run();
-    best_path = Path(std::vector<int>(), std::numeric_limits<int>::max(), "");
-    return ts(current_path, timer);
+    best_path_ = Path(std::vector<int>(), std::numeric_limits<int>::max(), "");
+    return main_loop(current_path, timer);
 }
 
-Path tabu_search::ts(Path current_path, Timer<Path>* timer)
+Path tabu_search::main_loop(Path& current_path, Timer<Path>* timer)
 {
-    for (double div_start{utils::time_now()}; timer->is_finished();) {
-        current_path = best_neighbour(current_path);
-
-        if (current_path < best_path) {
-            best_path = current_path;
-            div_start = utils::time_now();
-        }
-
-        if (utils::time_now() - div_start >
-            static_cast<double>(0.1 * 1000 * matrix_.size())) {
-            current_path = diversify(current_path);
-            div_start    = utils::time_now();
-        }
+    for (unsigned cycle{0}, idle_cycle{0}; timer->is_finished(); ++cycle) {
+        current_path = best_neighbour(current_path, cycle);
+        examine_path(current_path, idle_cycle);
     }
     return current_path;
 }
 
-Path tabu_search::best_neighbour(Path& current_path)
+Path tabu_search::best_neighbour(Path& current_path, unsigned cycle)
 {
-    Path temp_path;
     Path best = Path(std::vector<int>(), std::numeric_limits<int>::max(), "");
-    std::pair<int, int> index_of_swap;
+    std::pair<int, int> best_permutation;
+    auto permutations{get_all_index_pairs(current_path)};
 
-    for (int i{1}; i < current_path.size() - 1; ++i) {
-        for (int j{i}; j < current_path.size() - 1; ++j) {
-            temp_path = current_path;
-            std::swap(temp_path[i], temp_path[j]);
-            temp_path.recalc_cost(matrix_);
+    for (auto& perm : permutations) {
+        Path temp_path = neighbour_fnc_(perm, current_path, matrix_);
 
-            if (is_valid_tabu({i, j}, temp_path.cost_)) {
-                best          = temp_path < best ? temp_path : best;
-                index_of_swap = {i, j};
-            }
+        if (is_valid_tabu(perm, temp_path.cost_)) {
+            best             = temp_path < best ? temp_path : best;
+            best_permutation = perm;
         }
     }
 
-    tabu_list.push_back(index_of_swap);
+    add_tabu(best_permutation, cycle + tabu_cooldown);
     return best;
 }
 
-bool tabu_search::is_valid_tabu(std::pair<int, int> swap, int cost)
+std::vector<std::pair<size_t, size_t>> tabu_search::get_all_index_pairs(
+    Path& path)
 {
-    auto exists = std::find(tabu_list.begin(), tabu_list.end(), swap);
-    if (exists != std::end(tabu_list))
-        return cost < best_path.cost_;  // Aspiration
+    auto all_permutations{std::vector<std::pair<size_t, size_t>>()};
+    for (int i{1}; i < path.size() - 2; ++i)
+        for (int j{i + 1}; j < path.size() - 2; ++j)
+            all_permutations.push_back({i, j});
+    return all_permutations;
+}
 
-    return true;
+void tabu_search::examine_path(Path& current_path, unsigned idle_cycle)
+{
+    if (current_path < best_path_) {
+        best_path_ = current_path;
+        idle_cycle = 0;
+    }
+    ++idle_cycle;
+    if (idle_cycle >= idle_cycle_limit) {
+        current_path = diversify(current_path);
+        idle_cycle   = 0;
+    }
 }
 
 Path tabu_search::diversify(Path& current_path)
 {
-    tabu_list.clear();
-    std::vector<int> nodes;
-    Path new_path;
-
-    for (int div = div_counter; div > 0; --div) {
-        nodes = get_each_n(div, current_path);
-        remove_duplicates(nodes, new_path);
-        add_nodes(nodes, new_path);
-    }
-
-    div_counter++;
+    clear_tabu();
+    Path new_path = current_path;
+    std::random_shuffle(new_path.begin() + 1, new_path.end() - 2);
     new_path.recalc_cost(matrix_);
     return new_path;
-}
-
-void tabu_search::remove_duplicates(std::vector<int>& nodes, Path& new_path)
-{
-    auto to_remove =
-        std::remove_if(nodes.begin(), nodes.end(), [&new_path](int node) {
-            return std::find(new_path.begin(), new_path.end(), node) !=
-                   std::end(new_path);
-        });
-    nodes.erase(to_remove, nodes.end());
-}
-
-std::vector<int> tabu_search::get_each_n(int n, Path& path)
-{
-    std::vector<int> output;
-    for (int i{1}; i < path.size() - 1; i += n) {
-        output.push_back(path[i]);
-    }
-    return output;
 }
 
 void tabu_search::add_nodes(std::vector<int>& nodes, Path& path_to_add)
 {
     for (auto& node : nodes) path_to_add.add_to_path(node, 0);
+}
+
+bool tabu_search::is_valid_tabu(const std::pair<size_t, size_t>& tabu_index,
+                                const size_t iter_count)
+{
+    return tabu_list_[tabu_index.first][tabu_index.second] < iter_count;
+}
+
+bool tabu_search::aspiration(Path& neighbour) { return neighbour < best_path_; }
+
+void tabu_search::add_tabu(const std::pair<size_t, size_t>& tabu_index,
+                           const size_t iterations)
+{
+    tabu_list_[tabu_index.first][tabu_index.second] = iterations;
+    tabu_list_[tabu_index.second][tabu_index.first] = iterations;
+}
+
+void tabu_search::clear_tabu()
+{
+    std::for_each(tabu_list_.begin(), tabu_list_.end(),
+                  [](std::vector<unsigned> row) {
+                      std::fill(row.begin(), row.end(), 0);
+                  });
+}
+
+static Path swap(std::pair<size_t, size_t> swap_index, Path& current_path,
+                 Adjacency_Matrix& matrix)
+{
+    Path temp_path = current_path;
+    std::swap(temp_path[swap_index.first], temp_path[swap_index.second]);
+    temp_path.recalc_cost(matrix);
+    return temp_path;
 }
 }  // namespace tsp_approx

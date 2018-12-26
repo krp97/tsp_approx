@@ -19,6 +19,18 @@ Path tsp::simulated_annealing(
     return timer.get_output();
 }
 
+Path tsp::tabu_search(
+    std::function<Path(std::pair<size_t, size_t>, Path&, Adjacency_Matrix&)>
+        neighbour_fnc)
+{
+    auto ts{tsp_approx::tabu_search(matrix_, neighbour_fnc)};
+    Timer<Path> timer =
+        Timer<Path>([&ts](Timer<Path>* timer) -> Path { return ts.run(timer); },
+                    time_limit_);
+    timer.run();
+    return timer.get_output();
+}
+
 void tsp::load_from_file(std::string filepath)
 {
     try {

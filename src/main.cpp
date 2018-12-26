@@ -11,9 +11,9 @@
 int main()
 {
     Menu m{Menu()};
-    std::string subtitles[] = {"Ustaw czas wykonywania.",
-                               "Ustaw wspolczynnik chlodzenia.",
-                               "Wczytaj z pliku.", "Uruchom SA.", "Wyjscie"};
-    m.run(subtitles, 5, "Menu");
+    std::vector<std::string> subtitles = {
+        "Set the time limit.", "Set the cooling factor.",
+        "Load the graph from a file.", "Run the algorithms.", "Exit"};
+    m.run(subtitles, "Menu");
     return 0;
 }

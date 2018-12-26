@@ -5,6 +5,7 @@
 #include "adjacency_matrix.hpp"
 #include "path.hpp"
 #include "sim_annealing.hpp"
+#include "tabu_search.hpp"
 
 class tsp {
    public:
@@ -28,6 +29,10 @@ class tsp {
         std::function<double(double temperature, double temp_factor,
                              int cycle)> =
             tsp_approx::sim_annealing::linear_cooling);
+
+    Path tabu_search(
+        std::function<Path(std::pair<size_t, size_t>, Path&,
+                           Adjacency_Matrix&)> = tsp_approx::tabu_search::swap);
 
     bool is_loaded = false;
 

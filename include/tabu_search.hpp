@@ -6,6 +6,7 @@
 
 #include "adjacency_matrix.hpp"
 #include "path.hpp"
+#include "tabu_list.hpp"
 #include "timer.hpp"
 
 namespace tsp_approx {
@@ -20,24 +21,41 @@ class tabu_search {
     tabu_search& operator=(const tabu_search&) = default;
     tabu_search& operator=(tabu_search&&) = default;
 
-    tabu_search(double time_limit, Adjacency_Matrix& matrix);
+    tabu_search(
+        Adjacency_Matrix& matrix,
+        std::function<Path(std::pair<size_t, size_t>, Path&, Adjacency_Matrix&)>
+            neighbour_fnc);
 
     Path run(Timer<Path>* timer);
 
+    // Neighbour functions
+    static Path swap(std::pair<size_t, size_t> swap_index, Path& current_path,
+                     Adjacency_Matrix& matrix);
+
    private:
-    Path ts(Path current_path, Timer<Path>* timer);
-    Path best_neighbour(Path&);
-    bool is_valid_tabu(std::pair<int, int> swap, int cost);
-    bool check_time_bound(Timer<Path>* timer);
+    Path main_loop(Path& current_path, Timer<Path>* timer);
+    void examine_path(Path& current_path, unsigned idle_cycle);
+
+    Path best_neighbour(Path& current_path, unsigned cycle);
+    std::vector<std::pair<size_t, size_t>> get_all_index_pairs(Path&);
+
+    bool is_valid_tabu(const std::pair<size_t, size_t>& tabu_index,
+                       const size_t iter_count);
+    bool aspiration(Path& neighbour);
+    void add_tabu(const std::pair<size_t, size_t>& tabu_index,
+                  const size_t iterations);
+    bool should_diversify();
     Path diversify(Path& current_path);
-    std::vector<int> get_each_n(int n, Path& path);
-    void remove_duplicates(std::vector<int>& nodes, Path& new_path);
     void add_nodes(std::vector<int>& nodes, Path& path_to_add);
+    void clear_tabu();
 
     Adjacency_Matrix& matrix_;
-    std::deque<std::pair<int, int>> tabu_list;
-    const double time_limit_;
-    Path best_path;
-    int div_counter = 2;
+    std::vector<std::vector<unsigned>> tabu_list_;
+    std::function<Path(std::pair<size_t, size_t>, Path&, Adjacency_Matrix&)>
+        neighbour_fnc_;
+
+    Path best_path_;
+    const unsigned tabu_cooldown    = 10;
+    const unsigned idle_cycle_limit = 500;
 };
 }  // namespace tsp_approx
