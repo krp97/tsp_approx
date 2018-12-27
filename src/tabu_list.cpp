@@ -2,7 +2,7 @@
 namespace tsp_approx {
 
 Tabu_List::Tabu_List(std::vector<std::vector<unsigned>> tabu)
-    : tabu_list_{tabu} {};
+    : tabu_list_ {tabu} {};
 
 Tabu_List::Tabu_List(size_t size)
     : tabu_list_(size, std::vector<unsigned>(size, 0))

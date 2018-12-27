@@ -10,7 +10,8 @@
 #include "timer.hpp"
 
 namespace tsp_approx {
-class tabu_search {
+class tabu_search
+{
    public:
     tabu_search()  = delete;
     ~tabu_search() = default;

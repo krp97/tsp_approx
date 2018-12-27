@@ -10,7 +10,7 @@
 
 int main()
 {
-    Menu m{Menu()};
+    Menu m {Menu()};
     std::vector<std::string> subtitles = {
         "Set the time limit.", "Set the cooling factor.",
         "Load the graph from a file.", "Run the algorithms.", "Exit"};

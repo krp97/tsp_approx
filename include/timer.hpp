@@ -7,16 +7,17 @@
 #include <optional>
 
 template <typename T, typename... Args>
-class Timer {
+class Timer
+{
    public:
     Timer() = delete;
 
     Timer(std::function<T(Timer<T, Args...>*, Args...)> fnc_to_measure)
-        : fnc_to_measure_{fnc_to_measure} {};
+        : fnc_to_measure_ {fnc_to_measure} {};
 
     Timer(std::function<T(Timer<T, Args...>*, Args...)> fnc_to_measure,
           double time_limit)
-        : fnc_to_measure_{fnc_to_measure}, time_limit_{time_limit} {};
+        : fnc_to_measure_ {fnc_to_measure}, time_limit_ {time_limit} {};
 
     ~Timer() = default;
 
@@ -46,8 +47,8 @@ double Timer<T, Args...>::run(Args... args)
 {
     start_counter();
     alg_value = fnc_to_measure_(this, args...);
-    auto end_time{std::chrono::high_resolution_clock::now()};
-    std::chrono::duration<double, std::milli> duration{end_time - start_time_};
+    auto end_time {std::chrono::high_resolution_clock::now()};
+    std::chrono::duration<double, std::milli> duration {end_time - start_time_};
     return duration.count();
 }
 
@@ -60,8 +61,8 @@ void Timer<T, Args...>::start_counter()
 template <typename T, typename... Args>
 double Timer<T, Args...>::is_finished()
 {
-    auto end_time{std::chrono::high_resolution_clock::now()};
-    std::chrono::duration<double, std::milli> duration{end_time - start_time_};
+    auto end_time {std::chrono::high_resolution_clock::now()};
+    std::chrono::duration<double, std::milli> duration {end_time - start_time_};
     return duration.count() < time_limit_;
 }
 

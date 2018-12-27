@@ -4,7 +4,8 @@
 
 namespace tsp_approx {
 
-class greedy_search {
+class greedy_search
+{
    public:
     greedy_search() = delete;
 

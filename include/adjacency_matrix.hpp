@@ -6,7 +6,8 @@
 #include <string>
 #include <vector>
 
-class Adjacency_Matrix {
+class Adjacency_Matrix
+{
     friend class File_Handler;
 
    public:

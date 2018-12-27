@@ -2,7 +2,8 @@
 #include <vector>
 
 namespace tsp_approx {
-class Tabu_List {
+class Tabu_List
+{
    public:
     Tabu_List()  = delete;
     ~Tabu_List() = default;

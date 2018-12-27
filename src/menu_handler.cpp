@@ -15,7 +15,7 @@ void Menu::draw_menu(const std::vector<std::string>& subtitles,
                      const std::string title) const
 {
     clear_term();
-    int line_len{longest_subtitle(subtitles)};
+    int line_len {longest_subtitle(subtitles)};
     int total_line_len = line_len + format_chars;
 
     draw_title(title, line_len + format_chars);
@@ -38,7 +38,7 @@ void Menu::clear_term() const
 
 int Menu::longest_subtitle(const std::vector<std::string>& subtitles) const
 {
-    unsigned max_len{0};
+    unsigned max_len {0};
     auto max_el = std::max_element(subtitles.begin(), subtitles.end(),
                                    [&](std::string lhs, std::string rhs) {
                                        return lhs.size() < rhs.size();
@@ -48,9 +48,9 @@ int Menu::longest_subtitle(const std::vector<std::string>& subtitles) const
 
 void Menu::draw_title(const std::string& title, const unsigned line_len) const
 {
-    unsigned dash_count{line_len - (unsigned)title.size() - 2};
-    auto dashes{std::string((int)dash_count / 2, '-')};
-    auto title_string{std::string(dashes + " " + title + " " + dashes)};
+    unsigned dash_count {line_len - (unsigned)title.size() - 2};
+    auto dashes {std::string((int)dash_count / 2, '-')};
+    auto title_string {std::string(dashes + " " + title + " " + dashes)};
 
     if (dash_count % 2 == 0)
         std::cout << title_string << std::endl;
@@ -61,7 +61,7 @@ void Menu::draw_title(const std::string& title, const unsigned line_len) const
 void Menu::draw_body(const std::vector<std::string>& subtitles,
                      const unsigned max_line) const
 {
-    for (size_t i{1}; i <= subtitles.size(); ++i)
+    for (size_t i {1}; i <= subtitles.size(); ++i)
         std::cout << align_line(subtitles[i - 1], i, max_line);
 }
 
@@ -77,32 +77,40 @@ void Menu::handle_input(const std::vector<std::string>& subtitles,
 {
     int choice = 4;
     bool exit  = false;
-    while (!exit) {
+    while (!exit)
+    {
         draw_menu(subtitles, title);
         std::cin >> choice;
-        switch (choice) {
-            case 1: {
+        switch (choice)
+        {
+            case 1:
+            {
                 secure_read_double(tsp_api.time_limit_);
                 break;
             }
-            case 2: {
+            case 2:
+            {
                 secure_read_double(tsp_api.temp_factor_);
                 break;
             }
-            case 3: {
+            case 3:
+            {
                 load_from_file(get_filename());
                 break;
             }
-            case 4: {
+            case 4:
+            {
                 if (tsp_api.is_loaded)
                     algorithm_menu();
-                else {
+                else
+                {
                     std::cout << "\n Error: No graph data.";
                     wait_for_reaction();
                 }
                 break;
             }
-            default: {
+            default:
+            {
                 exit = true;
                 break;
             }
@@ -117,17 +125,21 @@ void Menu::algorithm_menu()
     std::vector<std::string> subtitles = {
         "SA - Linear cooling", "SA - Logarithmic cooling",
         "SA - Exponential cooling", "Tabu Search - Swap", "Previous"};
-    while (!exit) {
+    while (!exit)
+    {
         draw_menu(subtitles, "Algorithms");
         std::cin >> choice;
-        switch (choice) {
-            case 1: {
+        switch (choice)
+        {
+            case 1:
+            {
                 clear_term();
                 std::cout << tsp_api.simulated_annealing().to_string();
                 wait_for_reaction();
                 break;
             }
-            case 2: {
+            case 2:
+            {
                 clear_term();
                 std::cout
                     << tsp_api
@@ -137,7 +149,8 @@ void Menu::algorithm_menu()
                 wait_for_reaction();
                 break;
             }
-            case 3: {
+            case 3:
+            {
                 clear_term();
                 std::cout
                     << tsp_api
@@ -147,13 +160,15 @@ void Menu::algorithm_menu()
                 wait_for_reaction();
                 break;
             }
-            case 4: {
+            case 4:
+            {
                 clear_term();
                 std::cout << tsp_api.tabu_search().to_string();
                 wait_for_reaction();
                 break;
             }
-            default: {
+            default:
+            {
                 exit = true;
                 break;
             }
@@ -163,10 +178,11 @@ void Menu::algorithm_menu()
 
 void Menu::load_from_file(const std::string& filename)
 {
-    try {
+    try
+    {
         tsp_api.load_from_file(filename);
-    }
-    catch (const std::invalid_argument& e) {
+    } catch (const std::invalid_argument& e)
+    {
         std::cout << "\n Error >> " << e.what();
         wait_for_reaction();
     }
@@ -198,10 +214,11 @@ double Menu::get_double()
 
 void Menu::secure_read_double(double& amount)
 {
-    try {
+    try
+    {
         amount = get_double();
-    }
-    catch (const std::invalid_argument& e) {
+    } catch (const std::invalid_argument& e)
+    {
         std::cout << "\n" << e.what();
     }
 }

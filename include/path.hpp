@@ -4,7 +4,8 @@
 #include <vector>
 #include "adjacency_matrix.hpp"
 
-class Path {
+class Path
+{
    public:
     std::vector<int> path_;
     int cost_;

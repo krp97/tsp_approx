@@ -1,7 +1,7 @@
 #include "../include/file_handler.hpp"
 
 File_Handler::File_Handler(std::string filepath, Adjacency_Matrix& matrix)
-    : filepath_{filepath}, matrix_{matrix}
+    : filepath_ {filepath}, matrix_ {matrix}
 {
 }
 
@@ -9,15 +9,16 @@ bool File_Handler::run()
 {
     std::fstream file;
     file.exceptions(std::fstream::failbit | std::fstream::badbit);
-    try {
+    try
+    {
         file.open(filepath_);
         matrix_.load_from_file(file);
-    }
-    catch (const std::ios_base::failure&) {
+    } catch (const std::ios_base::failure&)
+    {
         error_ = "Blad otwierania pliku.";
         return false;
-    }
-    catch (const std::invalid_argument&) {
+    } catch (const std::invalid_argument&)
+    {
         error_ = "Blad wczytywania danych z pliku.";
         return false;
     }

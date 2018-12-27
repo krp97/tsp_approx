@@ -5,7 +5,8 @@
 #include <fstream>
 #include <string>
 
-class File_Handler {
+class File_Handler
+{
    public:
     File_Handler() = delete;
 

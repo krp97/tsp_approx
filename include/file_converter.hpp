@@ -4,7 +4,8 @@
 #include <string>
 
 namespace utils {
-class file_converter {
+class file_converter
+{
    public:
     int convert(const std::string& file_in, const std::string& file_out);
 

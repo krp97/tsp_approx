@@ -7,7 +7,8 @@
 
 namespace tsp_approx {
 
-class sim_annealing {
+class sim_annealing
+{
    public:
     sim_annealing()  = default;
     ~sim_annealing() = default;

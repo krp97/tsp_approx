@@ -10,7 +10,8 @@
 #include <string>
 #include <vector>
 
-class Menu {
+class Menu
+{
    public:
     Menu()        = default;
     Menu& operator=(const Menu& rhs) = delete;

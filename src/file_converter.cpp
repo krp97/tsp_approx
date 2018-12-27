@@ -47,12 +47,13 @@ int file_converter::header_get_size(ifstream& file)
     int size         = 0;
     string line;
 
-    for (;;) {
+    for (;;)
+    {
         getline(file, line);
-        if (file.fail() || line.empty())
-            error_exit("File READ error - HEADER");
+        if (file.fail() || line.empty()) error_exit("File READ error - HEADER");
 
-        if (line.find("DIMENSION") != string::npos) {
+        if (line.find("DIMENSION") != string::npos)
+        {
             istringstream in_ss(line);
             string tmp;
             in_ss >> tmp;
@@ -64,8 +65,7 @@ int file_converter::header_get_size(ifstream& file)
             else
                 return (size);
 
-        if (++header_lines >= 7)
-            error_exit("File READ error - HEADER");
+        if (++header_lines >= 7) error_exit("File READ error - HEADER");
     }
 }
 
@@ -77,10 +77,10 @@ int file_converter::value_digits(int val)
 {
     int width = 0;
 
-    if (val == 0)
-        return (1);
+    if (val == 0) return (1);
 
-    while (val) {
+    while (val)
+    {
         val /= 10;
         width++;
     }
@@ -101,23 +101,22 @@ int file_converter::convert(const std::string& filename_in,
     c_v_v_i city_distance;
 
     file_in.open(filename_in);
-    if (!file_in.is_open())
-        error_exit("File OPEN error - FILE_IN");
+    if (!file_in.is_open()) error_exit("File OPEN error - FILE_IN");
 
     size = header_get_size(file_in);
 
     city_distance.resize(size);
-    for (int i = 0; i < size; i++)
-        city_distance[i].resize(size);
+    for (int i = 0; i < size; i++) city_distance[i].resize(size);
 
     dist_max = 0;
     for (int i = 0; i < size; i++)
-        for (int j = 0; j < size; j++) {
+        for (int j = 0; j < size; j++)
+        {
             file_in >> dist;
-            if (file_in.fail())
-                error_exit("File READ error - DATA");
+            if (file_in.fail()) error_exit("File READ error - DATA");
 
-            if (i == j) {
+            if (i == j)
+            {
                 if (i == 0)
                     diagonal = dist;
                 else if (dist != diagonal)
@@ -129,21 +128,20 @@ int file_converter::convert(const std::string& filename_in,
 
             city_distance[i][j] = dist;
 
-            if (dist > dist_max)
-                dist_max = dist;
+            if (dist > dist_max) dist_max = dist;
         }
 
     file_in.close();
 
     file_out.open(filename_out + to_string(size) + ".txt");
-    if (!file_out.is_open())
-        error_exit("File OPEN error - FILE_OUT");
+    if (!file_out.is_open()) error_exit("File OPEN error - FILE_OUT");
 
     width = value_digits(dist_max);
 
     file_out << size << endl;
 
-    for (int i = 0; i < size; i++) {
+    for (int i = 0; i < size; i++)
+    {
         for (int j = 0; j < size; j++)
             if (j == 0)
                 file_out << setw(width) << city_distance[i][j];

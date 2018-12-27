@@ -7,7 +7,8 @@
 #include "sim_annealing.hpp"
 #include "tabu_search.hpp"
 
-class tsp {
+class tsp
+{
    public:
     double time_limit_;
     double temp_factor_;
