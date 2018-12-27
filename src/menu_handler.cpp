@@ -116,9 +116,9 @@ void Menu::algorithm_menu()
     bool exit                          = false;
     std::vector<std::string> subtitles = {
         "SA - Linear cooling", "SA - Logarithmic cooling",
-        "SA - Exponential cooling", "Previous"};
+        "SA - Exponential cooling", "Tabu Search - Swap", "Previous"};
     while (!exit) {
-        draw_menu(subtitles, "SA");
+        draw_menu(subtitles, "Algorithms");
         std::cin >> choice;
         switch (choice) {
             case 1: {
@@ -144,6 +144,12 @@ void Menu::algorithm_menu()
                            .simulated_annealing(
                                tsp_approx::sim_annealing::exponential_cooling)
                            .to_string();
+                wait_for_reaction();
+                break;
+            }
+            case 4: {
+                clear_term();
+                std::cout << tsp_api.tabu_search().to_string();
                 wait_for_reaction();
                 break;
             }

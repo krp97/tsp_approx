@@ -33,12 +33,9 @@ class tabu_search {
                      Adjacency_Matrix& matrix);
 
    private:
-    Path main_loop(Path& current_path, Timer<Path>* timer);
+    void main_loop(Path& current_path, Timer<Path>* timer);
     void examine_path(Path& current_path, unsigned idle_cycle);
-
     Path best_neighbour(Path& current_path, unsigned cycle);
-    std::vector<std::pair<size_t, size_t>> get_all_index_pairs(Path&);
-
     bool is_valid_tabu(const std::pair<size_t, size_t>& tabu_index,
                        const size_t iter_count);
     bool aspiration(Path& neighbour);
@@ -46,10 +43,10 @@ class tabu_search {
                   const size_t iterations);
     bool should_diversify();
     Path diversify(Path& current_path);
-    void add_nodes(std::vector<int>& nodes, Path& path_to_add);
     void clear_tabu();
 
     Adjacency_Matrix& matrix_;
+    std::vector<std::pair<size_t, size_t>> unique_pairs_;
     std::vector<std::vector<unsigned>> tabu_list_;
     std::function<Path(std::pair<size_t, size_t>, Path&, Adjacency_Matrix&)>
         neighbour_fnc_;

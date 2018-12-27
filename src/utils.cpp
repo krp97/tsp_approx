@@ -7,14 +7,6 @@
 
 namespace utils {
 
-inline double time_now()
-{
-    auto ms = std::chrono::time_point_cast<std::chrono::milliseconds>(
-                  std::chrono::high_resolution_clock::now())
-                  .time_since_epoch();
-    return ms.count();
-}
-
 inline double random_double(double a, double b)
 {
     std::random_device r;
@@ -31,4 +23,6 @@ inline int random_int(int a, int b)
     std::uniform_int_distribution<int> distribution(a, b);
     return distribution(generator);
 }
+
+inline int factorial(unsigned a) { return a == 1 ? 1 : a * factorial(a - 1); }
 }  // namespace utils
