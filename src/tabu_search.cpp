@@ -130,7 +130,7 @@ Path tabu_search::swap_n_reverse(std::pair<size_t, size_t> swap_index,
     auto min_it {temp_path.begin() +
                  std::min(swap_index.first, swap_index.second)};
 
-    for (; max_it != min_it; --max_it, ++min_it)
+    for (; max_it - min_it > 0; --max_it, ++min_it)
         std::iter_swap(max_it, min_it);
 
     temp_path.recalc_cost(matrix);

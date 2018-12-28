@@ -121,9 +121,13 @@ void Menu::algorithm_menu()
 {
     int choice                         = 4;
     bool exit                          = false;
-    std::vector<std::string> subtitles = {
-        "SA - Linear cooling", "SA - Logarithmic cooling",
-        "SA - Exponential cooling", "Tabu Search - Swap", "Previous"};
+    std::vector<std::string> subtitles = {"SA - Linear cooling",
+                                          "SA - Logarithmic cooling",
+                                          "SA - Exponential cooling",
+                                          "Tabu Search - Swap",
+                                          "Tabu Search - Swap and Reverse",
+                                          "Tabu Search - Insertion",
+                                          "Previous"};
     while (!exit)
     {
         draw_menu(subtitles, "Algorithms");
@@ -163,6 +167,26 @@ void Menu::algorithm_menu()
             {
                 clear_term();
                 std::cout << tsp_api.tabu_search().to_string();
+                wait_for_reaction();
+                break;
+            }
+            case 5:
+            {
+                clear_term();
+                std::cout << tsp_api
+                                 .tabu_search(
+                                     tsp_approx::tabu_search::swap_n_reverse)
+                                 .to_string();
+                wait_for_reaction();
+                break;
+            }
+            case 6:
+            {
+                clear_term();
+                std::cout << tsp_api
+                                 .tabu_search(
+                                     tsp_approx::tabu_search::insertion)
+                                 .to_string();
                 wait_for_reaction();
                 break;
             }
