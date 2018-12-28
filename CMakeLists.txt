@@ -34,6 +34,15 @@ set(SOURCES
     ${CMAKE_SOURCE_DIR}/src/sim_annealing.cpp
     ${CMAKE_SOURCE_DIR}/src/utils.cpp)
 
+find_program(CMAKE_CXX_CPPCHECK NAMES cppcheck)
+if(CMAKE_CXX_CPPCHECK)
+  list(APPEND CMAKE_CXX_CPPCHECK
+              "--enable=warning"
+              "--inconclusive"
+              "--force"
+              "--inline-suppr")
+endif()
+
 add_executable(${PROJECT_NAME} ${SOURCES} ${HEADERS})
 
 set_target_properties(${PROJECT_NAME}
@@ -42,4 +51,4 @@ set_target_properties(${PROJECT_NAME}
                                  CXX_STANDARD_REQUIRED
                                  ON
                                  COMPILE_FLAGS
-                                 "${WARNING_FLAGS}")
+                                 "-Wno-missing-braces -pedantic")

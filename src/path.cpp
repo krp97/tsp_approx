@@ -18,7 +18,7 @@ const Path& Path::operator=(const Path& rhs)
 void Path::recalc_cost(Adjacency_Matrix& matrix)
 {
     cost_ = 0;
-    for (int i {0}; i < path_.size() - 1; ++i)
+    for (size_t i {0}; i < path_.size() - 1; ++i)
         cost_ += matrix[path_[i]][path_[i + 1]];
 }
 
@@ -26,6 +26,13 @@ void Path::add_to_path(const int node, const int cost)
 {
     path_.push_back(node);
     cost_ += cost;
+}
+
+void Path::erase(size_t index) { path_.erase(std::begin(path_) + index); }
+
+void Path::insert(size_t index, int value)
+{
+    path_.insert(std::begin(path_) + index, value);
 }
 
 int Path::get_prev_city() { return path_[path_.size() - 1]; }
@@ -44,7 +51,8 @@ std::string Path::get_path_str()
     for (size_t i {0}; i < path_.size(); ++i)
     {
         output += std::to_string(path_[i]);
-        if (i < path_.size() - 1) output += "->";
+        if (i < path_.size() - 1)
+            output += "->";
     }
     return output;
 }

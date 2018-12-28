@@ -32,10 +32,14 @@ class tabu_search
     // Neighbour functions
     static Path swap(std::pair<size_t, size_t> swap_index, Path& current_path,
                      Adjacency_Matrix& matrix);
+    static Path swap_n_reverse(std::pair<size_t, size_t> swap_index,
+                               Path& current_path, Adjacency_Matrix& matrix);
+    static Path insertion(std::pair<size_t, size_t> swap_index,
+                          Path& current_path, Adjacency_Matrix& matrix);
 
    private:
     void main_loop(Path& current_path, Timer<Path>* timer);
-    void examine_path(Path& current_path, unsigned idle_cycle);
+    void examine_path(Path& current_path, unsigned& idle_cycle);
     Path best_neighbour(Path& current_path, unsigned cycle);
     bool is_valid_tabu(const std::pair<size_t, size_t>& tabu_index,
                        const size_t iter_count);
@@ -54,6 +58,6 @@ class tabu_search
 
     Path best_path_;
     const unsigned tabu_cooldown    = 10;
-    const unsigned idle_cycle_limit = 500;
+    const unsigned idle_cycle_limit = 100;
 };
 }  // namespace tsp_approx

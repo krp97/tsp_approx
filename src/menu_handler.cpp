@@ -18,10 +18,10 @@ void Menu::draw_menu(const std::vector<std::string>& subtitles,
     int line_len {longest_subtitle(subtitles)};
     int total_line_len = line_len + format_chars;
 
-    draw_title(title, line_len + format_chars);
+    draw_title(title, total_line_len);
     draw_body(subtitles, line_len);
 
-    std::cout << std::string(line_len + format_chars, '-') << std::endl;
+    std::cout << std::string(total_line_len, '-') << std::endl;
     std::cout << "\n Your choice >> ";
 }
 
@@ -38,7 +38,6 @@ void Menu::clear_term() const
 
 int Menu::longest_subtitle(const std::vector<std::string>& subtitles) const
 {
-    unsigned max_len {0};
     auto max_el = std::max_element(subtitles.begin(), subtitles.end(),
                                    [&](std::string lhs, std::string rhs) {
                                        return lhs.size() < rhs.size();

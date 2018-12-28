@@ -7,10 +7,6 @@
 class Path
 {
    public:
-    std::vector<int> path_;
-    int cost_;
-    std::string algo_name_;
-
     Path();
     Path(std::vector<int> path, const int cost, const std::string& algo_name);
     const Path& operator=(const Path& rhs);
@@ -24,15 +20,26 @@ class Path
     std::vector<int>::iterator begin() { return path_.begin(); };
     std::vector<int>::iterator end() { return path_.end(); };
 
-    int size() { return path_.size(); };
+    size_t size() { return path_.size(); };
 
     void recalc_cost(Adjacency_Matrix& matrix);
 
-    void add_to_path(const int node, const int cost);
     int get_prev_city();
     std::string to_string();
 
+    void add_to_path(const int node, const int cost);
+
+    void erase(size_t index);
+    void insert(size_t index, int value);
+
+    std::vector<int>& get_path() { return path_; };
+    int get_cost() { return cost_; };
+
    private:
+    std::vector<int> path_;
+    int cost_;
+    std::string algo_name_;
+
     void pretty_string(std::string& path, int line_len);
     std::string pretty_title(const std::string& title,
                              const unsigned line_len) const;

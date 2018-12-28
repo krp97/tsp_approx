@@ -75,7 +75,7 @@ void sim_annealing::update_path(Path& new_path, Path& current_path,
 double sim_annealing::calc_probability(Path& new_path, Path& current_path,
                                        double temperature)
 {
-    int cost_diff = (current_path.cost_ - new_path.cost_);
+    int cost_diff = (current_path.get_cost() - new_path.get_cost());
     return temperature <= 0 ? 0 : exp(cost_diff / temperature);
 }
 
@@ -102,7 +102,8 @@ int sim_annealing::find_min_edge()
 {
     int min = std::numeric_limits<int>::max();
     for (auto& row : matrix_)
-        for (auto& col : row) min = std::min(min, col);
+        for (auto& col : row)
+            min = std::min(min, col);
     return min;
 }
 
@@ -110,7 +111,8 @@ int sim_annealing::find_max_edge()
 {
     int max = std::numeric_limits<int>::min();
     for (auto& row : matrix_)
-        for (auto& col : row) max = std::max(max, col);
+        for (auto& col : row)
+            max = std::max(max, col);
     return max;
 }
 

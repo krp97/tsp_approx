@@ -13,7 +13,7 @@ class Timer
     Timer() = delete;
 
     Timer(std::function<T(Timer<T, Args...>*, Args...)> fnc_to_measure)
-        : fnc_to_measure_ {fnc_to_measure} {};
+        : fnc_to_measure_ {fnc_to_measure}, time_limit_ {0} {};
 
     Timer(std::function<T(Timer<T, Args...>*, Args...)> fnc_to_measure,
           double time_limit)
