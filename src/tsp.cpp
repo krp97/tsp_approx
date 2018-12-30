@@ -9,14 +9,19 @@ Path tsp::simulated_annealing(
     std::function<double(double temperature, double temp_factor, int cycle)>
         cooling_fnc)
 {
-    auto sa {tsp_approx::sim_annealing(temp_factor_, matrix_, cooling_fnc)};
+    for (int i = 0; i < 10; ++i)
+    {
+        auto sa {tsp_approx::sim_annealing(temp_factor_, matrix_, cooling_fnc)};
 
-    Timer<Path> timer =
-        Timer<Path>([&sa](Timer<Path>* timer) -> Path { return sa.run(timer); },
-                    time_limit_);
-    timer.run();
+        Timer<Path> timer = Timer<Path>(
+            [&sa](Timer<Path>* timer) -> Path { return sa.run(timer); },
+            time_limit_);
+        timer.run();
+        std::cout << "----------- Iteracja: " << i << std::endl;
+        std::cout << timer.get_output().to_string() << std::endl;
+    }
 
-    return timer.get_output();
+    return Path();
 }
 
 Path tsp::tabu_search(

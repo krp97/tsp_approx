@@ -1,5 +1,6 @@
 #pragma once
 
+#include <algorithm>
 #include <deque>
 #include <functional>
 #include <utility>
@@ -57,7 +58,7 @@ class tabu_search
         neighbour_fnc_;
 
     Path best_path_;
-    const unsigned tabu_cooldown    = 10;
-    const unsigned idle_cycle_limit = 500;
+    const unsigned tabu_cooldown = 650;
+    unsigned idle_cycle_limit;
 };
 }  // namespace tsp_approx

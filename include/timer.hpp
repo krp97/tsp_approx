@@ -28,7 +28,10 @@ class Timer
     Timer(Timer&)  = default;
 
     double run(Args... args);
+    double get_elapsed();
     double is_finished();
+
+    bool reached_checkpoint();
 
     T get_output();
 
@@ -36,6 +39,11 @@ class Timer
     std::function<T(Timer<T, Args...>*, Args...)> fnc_to_measure_;
     std::optional<T> alg_value;
     double time_limit_;
+
+    /* Variables needed to run the checkpoint printing. */
+    int checkpoint_counter_   = 1;
+    int number_of_checkpoints = 5;
+    /****************************************************/
 
     std::chrono::high_resolution_clock::time_point start_time_;
 
@@ -59,11 +67,17 @@ void Timer<T, Args...>::start_counter()
 }
 
 template <typename T, typename... Args>
-double Timer<T, Args...>::is_finished()
+double Timer<T, Args...>::get_elapsed()
 {
     auto end_time {std::chrono::high_resolution_clock::now()};
     std::chrono::duration<double, std::milli> duration {end_time - start_time_};
-    return duration.count() < time_limit_;
+    return duration.count();
+}
+
+template <typename T, typename... Args>
+double Timer<T, Args...>::is_finished()
+{
+    return get_elapsed() < time_limit_;
 }
 
 template <typename T, typename... Args>
@@ -73,4 +87,17 @@ T Timer<T, Args...>::get_output()
         return alg_value.value();
     else
         throw std::invalid_argument("Timed function does not return a value.");
+}
+
+template <typename T, typename... Args>
+bool Timer<T, Args...>::reached_checkpoint()
+{
+    if (get_elapsed() >
+        (checkpoint_counter_ / static_cast<double>(number_of_checkpoints)) *
+            time_limit_)
+    {
+        ++checkpoint_counter_;
+        return true;
+    }
+    return false;
 }

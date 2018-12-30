@@ -7,6 +7,9 @@
 #include <random>
 
 namespace tsp_approx {
+
+double sim_annealing::start_temperature_ = 0;
+
 sim_annealing::sim_annealing(
     const double temp_factor, Adjacency_Matrix& matrix,
     std::function<double(double temperature, double temp_factor, int cycle)>
@@ -25,22 +28,24 @@ Path sim_annealing::run(Timer<Path>* timer)
     Path current_path = gs.run();
     best_path_        = current_path;
     annealing(current_path, timer);
-    return current_path;
+    return best_path_;
 }
 
 void sim_annealing::annealing(Path& current_path, Timer<Path>* timer)
 {
     double temperature {start_temperature_};
-
+    std::cout << "start: " << start_temperature_ << std::endl;
+    bool flag = false;
     for (int cycle {0}; timer->is_finished(); ++cycle)
     {
         for (int i {0}; i < 5; ++i)
         {
             Path new_path = swap(current_path, matrix_);
-            update_path(new_path, current_path, temperature);
+            update_path(new_path, current_path, temperature, timer);
         }
         temperature = cooldown_fnc_(temperature, temp_factor_, cycle);
     }
+    std::cout << "\n\n Best found at: " << best_time << std::endl;
 }
 
 Path sim_annealing::swap(Path& current_path, Adjacency_Matrix& matrix)
@@ -58,12 +63,17 @@ Path sim_annealing::swap(Path& current_path, Adjacency_Matrix& matrix)
 }
 
 void sim_annealing::update_path(Path& new_path, Path& current_path,
-                                double temperature)
+                                double temperature, Timer<Path>* timer)
 {
     if (new_path < current_path)
     {
         current_path = new_path;
-        best_path_   = current_path < best_path_ ? current_path : best_path_;
+        if (best_path_ > current_path)
+        {
+            best_path_ = current_path;
+            best_time  = timer->get_elapsed();
+        }
+        // best_path_ = current_path < best_path_ ? current_path : best_path_;
     }
     else if (utils::random_double(0.0, 1.0) <
              calc_probability(new_path, current_path, temperature))
@@ -88,14 +98,14 @@ double sim_annealing::linear_cooling(double temperature, double temp_factor,
 double sim_annealing::logarithmical_cooling(double temperature,
                                             double temp_factor, int cycle)
 {
-    return temperature /
-           (1 + temp_factor * log(1 + static_cast<double>(cycle)));
+    return sim_annealing::start_temperature_ /
+           (1 + temp_factor * log(1.0 + static_cast<double>(cycle)));
 }
 
 double sim_annealing::exponential_cooling(double temperature,
                                           double temp_factor, int cycle)
 {
-    return temperature * pow(temp_factor, cycle);
+    return sim_annealing::start_temperature_ * pow(temp_factor, cycle);
 }
 
 int sim_annealing::find_min_edge()

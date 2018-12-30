@@ -40,12 +40,14 @@ class sim_annealing
 
     void annealing(Path&, Timer<Path>* timer);
     Path swap(Path& current_path, Adjacency_Matrix& matrix);
-    void update_path(Path& new_path, Path& current_path, double temperature);
+    void update_path(Path& new_path, Path& current_path, double temperature,
+                     Timer<Path>* timer);
     double calc_probability(Path& new_path, Path& current_path,
                             double temperature);
 
-    double start_temperature_;
+    static double start_temperature_;
     const double temp_factor_;
+    double best_time = 0.0;
     std::function<double(double temperature, double temp_factor, int cycle)>
         cooldown_fnc_;
 
