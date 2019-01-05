@@ -5,7 +5,6 @@
 #include "timer.hpp"
 #include "tsp.hpp"
 
-#include <filesystem>
 #include <fstream>
 #include <string>
 #include <vector>

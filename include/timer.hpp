@@ -40,11 +40,6 @@ class Timer
     std::optional<T> alg_value;
     double time_limit_;
 
-    /* Variables needed to run the checkpoint printing. */
-    int checkpoint_counter_   = 1;
-    int number_of_checkpoints = 5;
-    /****************************************************/
-
     std::chrono::high_resolution_clock::time_point start_time_;
 
     void start_counter();
@@ -87,17 +82,4 @@ T Timer<T, Args...>::get_output()
         return alg_value.value();
     else
         throw std::invalid_argument("Timed function does not return a value.");
-}
-
-template <typename T, typename... Args>
-bool Timer<T, Args...>::reached_checkpoint()
-{
-    if (get_elapsed() >
-        (checkpoint_counter_ / static_cast<double>(number_of_checkpoints)) *
-            time_limit_)
-    {
-        ++checkpoint_counter_;
-        return true;
-    }
-    return false;
 }

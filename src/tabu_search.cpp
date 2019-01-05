@@ -18,7 +18,7 @@ tabu_search::tabu_search(
             for (size_t j {i + 1}; j <= matrix_.size() - 1; ++j)
                 unique_pairs_.push_back({i, j});
     }();
-    idle_cycle_limit = 1000;
+    idle_cycle_limit = 500;
 }
 
 Path tabu_search::run(Timer<Path>* timer)
@@ -36,9 +36,6 @@ void tabu_search::main_loop(Path& current_path, Timer<Path>* timer)
     {
         current_path = best_neighbour(current_path, cycle);
         examine_path(current_path, idle_cycle);
-
-        if (timer->reached_checkpoint())
-            std::cout << best_path_.to_string() << std::endl;
     }
 }
 

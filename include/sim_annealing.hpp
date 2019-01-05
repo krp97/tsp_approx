@@ -47,7 +47,6 @@ class sim_annealing
 
     static double start_temperature_;
     const double temp_factor_;
-    double best_time = 0.0;
     std::function<double(double temperature, double temp_factor, int cycle)>
         cooldown_fnc_;
 

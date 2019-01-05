@@ -34,8 +34,6 @@ Path sim_annealing::run(Timer<Path>* timer)
 void sim_annealing::annealing(Path& current_path, Timer<Path>* timer)
 {
     double temperature {start_temperature_};
-    std::cout << "start: " << start_temperature_ << std::endl;
-    bool flag = false;
     for (int cycle {0}; timer->is_finished(); ++cycle)
     {
         for (int i {0}; i < 5; ++i)
@@ -45,7 +43,6 @@ void sim_annealing::annealing(Path& current_path, Timer<Path>* timer)
         }
         temperature = cooldown_fnc_(temperature, temp_factor_, cycle);
     }
-    std::cout << "\n\n Best found at: " << best_time << std::endl;
 }
 
 Path sim_annealing::swap(Path& current_path, Adjacency_Matrix& matrix)
@@ -68,12 +65,7 @@ void sim_annealing::update_path(Path& new_path, Path& current_path,
     if (new_path < current_path)
     {
         current_path = new_path;
-        if (best_path_ > current_path)
-        {
-            best_path_ = current_path;
-            best_time  = timer->get_elapsed();
-        }
-        // best_path_ = current_path < best_path_ ? current_path : best_path_;
+        best_path_   = current_path < best_path_ ? current_path : best_path_;
     }
     else if (utils::random_double(0.0, 1.0) <
              calc_probability(new_path, current_path, temperature))
