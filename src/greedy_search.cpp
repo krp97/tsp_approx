@@ -11,7 +11,6 @@ Path greedy_search::run()
     auto visited = std::vector<bool>(matrix_.size(), false);
     path.add_to_path(0, 0);
     visited[0] = true;
-
     run(path, visited);
     path.add_to_path(0, matrix_[path.get_prev_city()][0]);
     return path;

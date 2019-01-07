@@ -10,12 +10,10 @@ Path tsp::simulated_annealing(
         cooling_fnc)
 {
     auto sa {tsp_approx::sim_annealing(temp_factor_, matrix_, cooling_fnc)};
-
     Timer<Path> timer =
         Timer<Path>([&sa](Timer<Path>* timer) -> Path { return sa.run(timer); },
                     time_limit_);
     timer.run();
-
     return timer.get_output();
 }
 

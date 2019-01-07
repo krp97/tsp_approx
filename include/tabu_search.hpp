@@ -58,7 +58,7 @@ class tabu_search
         neighbour_fnc_;
 
     Path best_path_;
-    const unsigned tabu_cooldown = 650;
+    unsigned tabu_cooldown;
     unsigned idle_cycle_limit;
 };
 }  // namespace tsp_approx
