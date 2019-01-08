@@ -22,8 +22,8 @@ tabu_search::tabu_search(
             for (size_t j {i + 1}; j <= matrix_.size() - 1; ++j)
                 unique_pairs_.push_back({i, j});
     }();
-	tabu_cooldown = static_cast<unsigned>(matrix.size()) / 2;
-    idle_cycle_limit = round(500/log10(static_cast<double>(matrix.size())));
+    tabu_cooldown    = static_cast<unsigned>(matrix.size()) / 2;
+    idle_cycle_limit = round(500 / log10(static_cast<double>(matrix.size())));
 }
 
 Path tabu_search::run(Timer<Path> *timer)
@@ -53,9 +53,9 @@ Path tabu_search::best_neighbour(Path &current_path, unsigned cycle)
 
     for (auto &p : unique_pairs_)
     {
-        if (is_valid_tabu(p, cycle))
+        Path temp_path = neighbour_fnc_(p, current_path, matrix_);
+        if (is_valid_tabu(p, cycle) || aspiration(temp_path))
         {
-            Path temp_path = neighbour_fnc_(p, current_path, matrix_);
             if (temp_path < best)
             {
                 best      = temp_path;
