@@ -25,6 +25,7 @@ class tsp
     tsp(double time_limit, double temp_start, double temp_factor);
 
     void load_from_file(std::string);
+    int get_matrix_size() const;
 
     Path simulated_annealing(
         std::function<double(double temperature, double temp_factor,

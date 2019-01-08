@@ -5,6 +5,8 @@ tsp::tsp(double time_limit, double temp_start, double temp_factor)
 {
 }
 
+int tsp::get_matrix_size() const { return matrix_.size(); }
+
 Path tsp::simulated_annealing(
     std::function<double(double temperature, double temp_factor, int cycle)>
         cooling_fnc)

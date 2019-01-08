@@ -19,12 +19,24 @@ void Menu::draw_menu(const std::vector<std::string>& subtitles,
 
     draw_title(title, total_line_len);
     draw_body(subtitles, line_len);
-
     std::cout << std::string(total_line_len, '-') << std::endl;
+    draw_parameters(total_line_len, subtitles.size() + 2);
     std::cout << "\n Your choice >> ";
 }
 
-void Menu::draw_extras() const {}
+void Menu::draw_parameters(int line_len, int lines) const
+{
+    gotoxy(line_len + 1, 2);
+    std::cout << " >> " << tsp_api.time_limit_;
+    gotoxy(line_len + 1, 3);
+    std::cout << " >> " << tsp_api.temp_factor_;
+    gotoxy(line_len + 1, 4);
+    if (tsp_api.is_loaded)
+        std::cout << " Size >> " << tsp_api.get_matrix_size();
+    gotoxy(0, lines + 1);
+}
+
+void Menu::gotoxy(int x, int y) const { printf("%c[%d;%df", 0x1B, y, x); }
 
 void Menu::clear_term() const
 {

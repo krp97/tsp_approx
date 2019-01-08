@@ -15,11 +15,11 @@ bool File_Handler::run()
         matrix_.load_from_file(file);
     } catch (const std::ios_base::failure&)
     {
-        error_ = "Blad otwierania pliku.";
+        error_ = "Error: Could not open the file specified.";
         return false;
     } catch (const std::invalid_argument&)
     {
-        error_ = "Blad wczytywania danych z pliku.";
+        error_ = "Error: Could not read from the file specified.";
         return false;
     }
     return true;

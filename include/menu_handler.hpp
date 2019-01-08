@@ -24,14 +24,15 @@ class Menu
     const int format_chars = 7;  // = | 1) "..." |
     tsp tsp_api;
 
+    void gotoxy(int x, int y) const;
     void draw_menu(const std::vector<std::string>& subtitles,
                    const std::string title) const;
-    void draw_extras() const;
     void draw_title(const std::string& title, const unsigned max_line) const;
     void draw_body(const std::vector<std::string>& subtitles,
                    const unsigned max_line) const;
     std::string align_line(const std::string& line, const unsigned line_no,
                            const unsigned max_len) const;
+    void draw_parameters(int line_len, int lines) const;
     void clear_term() const;
     int longest_subtitle(const std::vector<std::string>& subtitles) const;
 

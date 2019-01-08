@@ -41,8 +41,6 @@ void tabu_search::main_loop(Path &current_path, Timer<Path> *timer)
     {
         current_path = best_neighbour(current_path, cycle);
         examine_path(current_path, idle_cycle);
-        if (timer->reached_checkpoint())
-            std::cout << current_path.to_string() << std::endl;
     }
 }
 
