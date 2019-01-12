@@ -12,8 +12,12 @@ int main()
 {
     Menu m {Menu()};
     std::vector<std::string> subtitles = {
-        "Set the time limit.", "Set the cooling factor.",
-        "Load the graph from a file.", "Run the algorithms.", "Exit"};
+        "Set the time limit.",
+        "Set the cooling factor.",
+        "Load the graph from a file (.txt only).",
+        "Run the algorithms.",
+        "Convert from TSPLIB to txt.",
+        "Exit"};
     m.run(subtitles, "Menu");
     return 0;
 }

@@ -1,4 +1,5 @@
 #include "../include/menu_handler.hpp"
+#include "../include/file_converter.hpp"
 #include "../include/timer.hpp"
 
 #include <iostream>
@@ -11,7 +12,7 @@ void Menu::run(const std::vector<std::string>& subtitles,
 }
 
 void Menu::draw_menu(const std::vector<std::string>& subtitles,
-                     const std::string title) const
+                     const std::string title, bool draw_params) const
 {
     clear_term();
     int line_len {longest_subtitle(subtitles)};
@@ -20,8 +21,8 @@ void Menu::draw_menu(const std::vector<std::string>& subtitles,
     draw_title(title, total_line_len);
     draw_body(subtitles, line_len);
     std::cout << std::string(total_line_len, '-') << std::endl;
-    draw_parameters(total_line_len, subtitles.size() + 2);
-    std::cout << "\n Your choice >> ";
+    if (draw_params)
+        draw_parameters(total_line_len, subtitles.size() + 2);
 }
 
 void Menu::draw_parameters(int line_len, int lines) const
@@ -89,7 +90,8 @@ void Menu::handle_input(const std::vector<std::string>& subtitles,
     bool exit  = false;
     while (!exit)
     {
-        draw_menu(subtitles, title);
+        draw_menu(subtitles, title, true);
+        std::cout << " Your choice >> ";
         std::cin >> choice;
         switch (choice)
         {
@@ -119,6 +121,11 @@ void Menu::handle_input(const std::vector<std::string>& subtitles,
                 }
                 break;
             }
+            case 5:
+            {
+                convert_file(get_filename());
+                break;
+            }
             default:
             {
                 exit = true;
@@ -126,6 +133,12 @@ void Menu::handle_input(const std::vector<std::string>& subtitles,
             }
         }
     }
+}
+
+void Menu::convert_file(const std::string& filename)
+{
+    auto fc = utils::file_converter();
+    fc.convert(filename, "tsp");
 }
 
 void Menu::algorithm_menu()
@@ -141,7 +154,8 @@ void Menu::algorithm_menu()
                                           "Previous"};
     while (!exit)
     {
-        draw_menu(subtitles, "Algorithms");
+        draw_menu(subtitles, "Algorithms", false);
+        std::cout << " Your choice >> ";
         std::cin >> choice;
         switch (choice)
         {
